@@ -22,6 +22,14 @@ public class CouponCmd implements CommandExecutor {
     	if (args.length >= 1){
     		if (args[0].equalsIgnoreCase("create")){
     			// TODO: Command logic	
+    			
+    			if (args[1].isEmpty()) {
+    				sender.sendMessage("Unkown command argument, " + args[1] + " please try again.");
+    			}
+    			
+    			if (args[1].matches("\\d*")&& args[1].length() >2) {
+    				
+    			}
     		}
     		
     		else if (args[0].equalsIgnoreCase("delete")){ // Not sure if this is going to exist or not
