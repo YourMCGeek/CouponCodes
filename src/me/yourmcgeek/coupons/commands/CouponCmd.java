@@ -6,7 +6,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 /**
- * Created by Tucker on 11/26/2016.
+ * Created by YourMCGeek on 11/26/2016.
  */
 public class CouponCmd implements CommandExecutor {
 	

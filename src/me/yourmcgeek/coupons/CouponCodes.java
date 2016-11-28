@@ -5,7 +5,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import me.yourmcgeek.coupons.commands.CouponCmd;
 
 /**
- * Created by Tucker on 11/26/2016.
+ * Created by YourMCGeek on 11/26/2016.
  */
 public class CouponCodes extends JavaPlugin {
 
