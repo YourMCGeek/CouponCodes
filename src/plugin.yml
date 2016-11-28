@@ -1,0 +1,10 @@
+name: CouponCodes
+main: me.yourmcgeek.coupons
+version: 1.0
+description: N/A (Not clarified)
+author: YourMCGeek, 2008Choco
+commands:
+    coupon:
+      description: The central CouponCodes command
+      usage: /<command> [create|delete]
+      aliases: [coupons]

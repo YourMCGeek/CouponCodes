@@ -1,17 +1,19 @@
-package me.YourMCGeek.CouponCodes;
+package me.yourmcgeek.coupons;
 
 import org.bukkit.plugin.java.JavaPlugin;
+
+import me.yourmcgeek.coupons.commands.CouponCmd;
 
 /**
  * Created by Tucker on 11/26/2016.
  */
-public class Main extends JavaPlugin {
+public class CouponCodes extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
 		this.getLogger().info("CouponCodes is ready to provide discounts!");
 
-		this.getCommand("create").setExecutor(new CommandCreate());
+		this.getCommand("coupon").setExecutor(new CouponCmd());
 	}
 
 	@Override
