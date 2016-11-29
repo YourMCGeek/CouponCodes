@@ -22,7 +22,7 @@ public class CouponCodes extends JavaPlugin {
 		// Event registration
 		
 		// Command registration
-		this.getCommand("coupon").setExecutor(new CouponCmd());
+		this.getCommand("coupon").setExecutor(new CouponCmd(this));
 	}
 
 	@Override
