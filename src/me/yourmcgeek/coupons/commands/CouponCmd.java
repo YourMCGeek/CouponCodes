@@ -24,11 +24,16 @@ public class CouponCmd implements CommandExecutor {
     			// TODO: Command logic	
     			
     			if (args[1].isEmpty()) {
-    				sender.sendMessage("Unkown command argument, " + args[1] + " please try again.");
+    				sender.sendMessage("§cUnkown command argument, §4" + args[1] + " please try again.");
     			}
     			
-    			if (args[1].matches("\\d*")&& args[1].length() >2) {
-    				
+    			if (args[1].matches("\\d*")&& args[1].length() > 2) {
+    				if (args[2].isEmpty()) {
+    					sender.sendMessage("§cPlease enter an item.");
+    				}
+    				else {
+    					
+    				}
     			}
     		}
     		
