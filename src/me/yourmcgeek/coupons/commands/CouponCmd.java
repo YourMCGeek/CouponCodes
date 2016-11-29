@@ -5,6 +5,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.ChatColor;
 
 /**
  * Created by YourMCGeek on 11/26/2016.
@@ -50,6 +51,16 @@ public class CouponCmd implements CommandExecutor {
     		
     		else if (args[0].equalsIgnoreCase("delete")){ // Not sure if this is going to exist or not
     			
+    		}
+    		
+    		else if (args[0].equalsIgnoreCase("help")) {
+    			ChatColor green = ChatColor.GREEN;
+    			sender.sendMessage(green + "Welcome to CouponCodes Help Message!");
+    			sender.sendMessage("                   ");
+    			sender.sendMessage(green + "Use /coupon create {Code} {Number of items} {item name} to create a coupon.");
+    			sender.sendMessage(green + "Use /coupon delete {Code} to delete a coupon.");
+    			sender.sendMessage(green + "Use /coupon redeem {Code} to redeem a coupon.");
+    			sender.sendMessage(ChatColor.DARK_RED + "WARNING: MAKE SURE TO HAVE OPEN SPACE IN YOUR INVENTORY!");
     		}
     		
     		else{
