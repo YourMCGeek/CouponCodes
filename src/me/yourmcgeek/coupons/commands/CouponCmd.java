@@ -3,6 +3,7 @@ package me.yourmcgeek.coupons.commands;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -63,23 +64,13 @@ public class CouponCmd implements CommandExecutor {
     						String itemCountString = matcher.group(3);
     						
     						Material material = Material.valueOf(materialString);
-    						byte itemData = 0;
-    						int itemCount = 1;
+    						byte itemData = NumberUtils.toByte(itemDataString);
+    						int itemCount = NumberUtils.toInt(itemCountString, 1);
     						
     						if (material == null){
     							player.sendMessage("Unknown material value, \"" + materialString + "\". Ignoring");
     							continue;
     						}
-    						
-    						// Data parsing
-    						try{
-    							itemData = Byte.parseByte(itemDataString);
-    						}catch(NumberFormatException e){}
-    						
-    						// Item count parsing
-    						try{
-    							itemCount = Integer.parseInt(itemCountString);
-    						}catch(NumberFormatException e){}
     						
     						ItemStack item = new ItemStack(material, itemCount, itemData);
     						coupon.addRewards(item);
