@@ -158,7 +158,7 @@ public class Coupon implements ConfigurationSerializable {
 				String itemDataString = matcher.group(2);
 				String itemCountString = matcher.group(3);
 				
-				Material material = Material.valueOf(materialString);
+				Material material = Material.getMaterial(materialString);
 				byte itemData = NumberUtils.toByte(itemDataString);
 				int itemCount = NumberUtils.toInt(itemCountString, 1);
 				

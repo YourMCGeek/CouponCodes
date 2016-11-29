@@ -69,7 +69,7 @@ public class CouponCmd implements CommandExecutor {
     						String itemDataString = matcher.group(2);
     						String itemCountString = matcher.group(3);
     						
-    						Material material = Material.valueOf(materialString);
+    						Material material = Material.getMaterial(materialString);
     						byte itemData = NumberUtils.toByte(itemDataString);
     						int itemCount = NumberUtils.toInt(itemCountString, 1);
     						
@@ -96,18 +96,17 @@ public class CouponCmd implements CommandExecutor {
     			}
     		}
     		
-    		else if (args[0].equalsIgnoreCase("delete")){ // Not sure if this is going to exist or not
+    		else if (args[0].equalsIgnoreCase("delete")){
     			if (args.length >= 2) {
     				String code = args[1];
-    				if (couponRegistry.couponExists(code)) {
-    					couponRegistry.deleteCoupon(code);
+    				if (!this.couponRegistry.couponExists(code)){
+    					sender.sendMessage(ChatColor.DARK_RED + "ERROR: The following code, " + ChatColor.YELLOW + code + ChatColor.DARK_RED + ", does not exsist.");
+    					sender.sendMessage(ChatColor.DARK_RED + "Please try again with a valid coupon code.");
     					return true;
     				}
-    				else {
-    					sender.sendMessage(ChatColor.DARK_RED + "ERROR: The following code, " + code + ", does not exsist.");
-    					sender.sendMessage(ChatColor.DARK_RED + "Please try again with a valid coupon code.");
-    				}
-    			
+    				
+					couponRegistry.deleteCoupon(code);
+					player.sendMessage(ChatColor.GREEN + "Coupon code " + ChatColor.YELLOW + code + ChatColor.GREEN + " successfully deleted");
     			}
     		}
     		
