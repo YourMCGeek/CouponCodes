@@ -103,6 +103,16 @@ public class CouponCmd implements CommandExecutor {
     			
     		}
     		
+    		else if (args[0].equalsIgnoreCase("help")) {
+    			ChatColor green = ChatColor.GREEN;
+    			sender.sendMessage(green + "Welcome to CouponCodes Help Message!");
+    			sender.sendMessage("                   ");
+    			sender.sendMessage(green + "Use /coupon create {Code} {Number of items} {item name} to create a coupon.");
+    			sender.sendMessage(green + "Use /coupon delete {Code} to delete a coupon.");
+    			sender.sendMessage(green + "Use /coupon redeem {Code} to redeem a coupon.");
+    			sender.sendMessage(ChatColor.DARK_RED + "WARNING: MAKE SURE TO HAVE OPEN SPACE IN YOUR INVENTORY!");
+    		}
+    		
     		else{
     			player.sendMessage("Unknown command argument, " + args[0]);
     		}
