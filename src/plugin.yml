@@ -1,6 +1,6 @@
 name: CouponCodes
 main: me.yourmcgeek.coupons.CouponCodes
-version: 1.0
+version: 0.1
 description: N/A (Not clarified)
 author: YourMCGeek, 2008Choco
 commands:

@@ -154,7 +154,7 @@ public class Coupon implements ConfigurationSerializable {
 			Matcher matcher = ITEM_PATTERN.matcher(rewardString);
 			
 			while (matcher.find()){
-				String materialString = matcher.group(1);
+				String materialString = matcher.group(1).toUpperCase();
 				String itemDataString = matcher.group(2);
 				String itemCountString = matcher.group(3);
 				
