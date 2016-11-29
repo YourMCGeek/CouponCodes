@@ -59,7 +59,7 @@ public class CouponCmd implements CommandExecutor {
     					Coupon coupon = new Coupon(code);
     					matcher.reset();
     					while (matcher.find()){
-    						String materialString = matcher.group(1);
+    						String materialString = matcher.group(1).toUpperCase();
     						String itemDataString = matcher.group(2);
     						String itemCountString = matcher.group(3);
     						
@@ -91,7 +91,18 @@ public class CouponCmd implements CommandExecutor {
     		}
     		
     		else if (args[0].equalsIgnoreCase("delete")){ // Not sure if this is going to exist or not
+    			if (args.length >= 2) {
+    				String code = args[1];
+    				if (couponRegistry.couponExists(code)) {
+    					couponRegistry.deleteCoupon(code);
+    					return true;
+    				}
+    				else {
+    					sender.sendMessage(ChatColor.DARK_RED + "ERROR: The following code, " + code + ", does not exsist.");
+    					sender.sendMessage(ChatColor.DARK_RED + "Please try again with a valid coupon code.");
+    				}
     			
+    			}
     		}
     		
     		else if (args[0].equalsIgnoreCase("help")) {
@@ -101,7 +112,7 @@ public class CouponCmd implements CommandExecutor {
     			sender.sendMessage(green + "Use /coupon create {Code} {Number of items} {item name} to create a coupon.");
     			sender.sendMessage(green + "Use /coupon delete {Code} to delete a coupon.");
     			sender.sendMessage(green + "Use /coupon redeem {Code} to redeem a coupon.");
-    			sender.sendMessage(ChatColor.DARK_RED + "WARNING: MAKE SURE TO HAVE OPEN SPACE IN YOUR INVENTORY UPON REDEMTION!");
+    			sender.sendMessage(ChatColor.DARK_RED.toString() + ChatColor.BOLD + "WARNING: MAKE SURE TO HAVE OPEN SPACE IN YOUR INVENTORY UPON REDEMTION!");
     		}
     		
     		else{
@@ -109,6 +120,6 @@ public class CouponCmd implements CommandExecutor {
     		}
     	}
     	
-        return true;
-    }
+		return true;
+	}
 }
