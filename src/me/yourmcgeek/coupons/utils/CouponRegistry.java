@@ -76,4 +76,10 @@ public class CouponRegistry {
 		return ImmutableSet.copyOf(coupons);
 	}
 	
+	/** Clear all locally stored data in the coupon registry
+	 */
+	public void clearCouponData() {
+		this.coupons.forEach(c -> c.clearData());
+		this.coupons.clear();
+	}
 }

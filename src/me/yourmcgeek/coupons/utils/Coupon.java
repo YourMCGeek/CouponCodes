@@ -2,11 +2,19 @@ package me.yourmcgeek.coupons.utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
+import org.bukkit.Material;
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -16,7 +24,8 @@ import com.google.common.collect.ImmutableSet;
 /** Represents a coupon registered to the server, its code and its rewards
  * @author Parker Hawke - 2008Choco
  */
-public class Coupon {
+@SerializableAs("Coupon")
+public class Coupon implements ConfigurationSerializable {
 	
 	private final List<UUID> redeemed = new ArrayList<>();
 	
@@ -100,5 +109,83 @@ public class Coupon {
 	 */
 	public List<UUID> getRedeemed() {
 		return ImmutableList.copyOf(this.redeemed);
+	}
+	
+	/** Clear all data stored in the coupon object
+	 */
+	public void clearData() {
+		this.rewards.clear();
+		this.redeemed.clear();
+	}
+
+	@Override
+	public Map<String, Object> serialize() {
+		Map<String, Object> data = new HashMap<>();
+		
+		data.put("code", this.code);
+		
+		List<String> serializedItems = new ArrayList<>();
+		for (ItemStack item : this.rewards)
+			serializedItems.add(item.getType() + ":" + item.getData() + "|" + item.getAmount());
+		data.put("rewards", serializedItems);
+		
+		List<String> redeemedUUIDS = this.redeemed.stream().distinct().map(UUID::toString).collect(Collectors.toList()); // Convert all UUIDs to Strings
+		data.put("redeemed", redeemedUUIDS);
+		return data;
+	}
+	
+	private static final Pattern ITEM_PATTERN = Pattern.compile("(\\w+)(?:(?:\\:{1})(\\d+)){0,1}(?:(?:\\|{1})(\\d+)){0,1}");
+	
+	@SuppressWarnings("unchecked")
+	public Coupon deserialize(Map<String, Object> data) {
+		String code = "";
+		List<UUID> redeemed = new ArrayList<>();
+		
+		if (data.containsKey("code")){
+			code = (String) data.get("code");
+		}
+		else return null;
+
+		Coupon coupon = new Coupon(code);
+		
+		if (data.containsKey("rewards")){
+			String rewardString = String.join(",", (List<String>) data.get("rewards"));
+			Matcher matcher = ITEM_PATTERN.matcher(rewardString);
+			
+			while (matcher.find()){
+				String materialString = matcher.group(1);
+				String itemDataString = matcher.group(2);
+				String itemCountString = matcher.group(3);
+				
+				Material material = Material.valueOf(materialString);
+				byte itemData = 0;
+				int itemCount = 1;
+				
+				if (material == null) continue;
+				
+				// Data parsing
+				try{
+					itemData = Byte.parseByte(itemDataString);
+				}catch(NumberFormatException e){}
+				
+				// Item count parsing
+				try{
+					itemCount = Integer.parseInt(itemCountString);
+				}catch(NumberFormatException e){}
+				
+				ItemStack item = new ItemStack(material, itemCount, itemData);
+				coupon.addRewards(item);
+			}
+		}
+		
+		if (data.containsKey("redeemed")){
+			List<String> redeemedStrings = (List<String>) data.get("redeemed");
+			for (String redeemedString : redeemedStrings)
+				redeemed.add(UUID.fromString(redeemedString));
+			
+			coupon.redeemed.addAll(redeemed);
+		}
+		
+		return coupon;
 	}
 }
