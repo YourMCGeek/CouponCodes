@@ -49,10 +49,16 @@ public class CouponCmd implements CommandExecutor {
     			if (args.length >= 2) {
     				String code = args[1];
     				
+    				// Check if the coupon exists before creating a new one
+    				if (this.couponRegistry.couponExists(code)) {
+    					player.sendMessage(ChatColor.RED + "A coupon with the code " + ChatColor.YELLOW + code + ChatColor.RED + " already exists");
+    					return true;
+    				}
+    				
     				if (args.length >= 3) {
     					Matcher matcher = ITEM_PATTERN.matcher(args[2]);
     					if (!matcher.find()){
-    						player.sendMessage("Invalid material format provided. Expected: " + ChatColor.DARK_RED + "<material[:data][|amount]>");
+    						player.sendMessage(ChatColor.RED + "Invalid material format provided. Expected: " + ChatColor.DARK_RED + "<material[:data][|amount]>");
     						return true;
     					}
     					
@@ -68,7 +74,7 @@ public class CouponCmd implements CommandExecutor {
     						int itemCount = NumberUtils.toInt(itemCountString, 1);
     						
     						if (material == null){
-    							player.sendMessage("Unknown material value, \"" + materialString + "\". Ignoring");
+    							player.sendMessage(ChatColor.RED + "Unknown material value, \"" + materialString + "\". Ignoring");
     							continue;
     						}
     						
