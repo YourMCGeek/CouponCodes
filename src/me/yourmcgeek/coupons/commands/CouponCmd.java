@@ -92,6 +92,9 @@ public class CouponCmd implements CommandExecutor {
 						sender.sendMessage(ChatColor.RED + "Please provide a valid material format. " + ChatColor.DARK_RED + "<material[:data][|amount]>");
 					}
 				}
+				else{
+					sender.sendMessage(ChatColor.RED + "Please specify a code for this coupon");
+				}
 			}
 			
 			else if (args[0].equalsIgnoreCase("delete")){
@@ -111,6 +114,9 @@ public class CouponCmd implements CommandExecutor {
 
 					couponRegistry.deleteCoupon(code);
 					sender.sendMessage(ChatColor.GREEN + "Coupon code " + ChatColor.YELLOW + code + ChatColor.GREEN + " successfully deleted");
+				}
+				else{
+					sender.sendMessage(ChatColor.RED + "Please specify a coupon code to delete");
 				}
 			}
 			
@@ -137,11 +143,19 @@ public class CouponCmd implements CommandExecutor {
 					}
 					
 					Coupon coupon = this.couponRegistry.getCoupon(code);
+					if (coupon.hasRedeemed(player)){
+						sender.sendMessage(ChatColor.DARK_RED + "You have already redeemed this reward! You cannot redeem it again!");
+						return true;
+					}
+					
 					Inventory inventory = player.getInventory();
 					coupon.getRewards().forEach(i -> inventory.addItem(i));
 					coupon.setRedeemed(player);
 					
 					sender.sendMessage(ChatColor.GREEN + "You have claimed the coupon code " + ChatColor.YELLOW + code);
+				}
+				else{
+					sender.sendMessage(ChatColor.RED + "Please specify a coupon code to redeem");
 				}
 			}
 
@@ -170,6 +184,9 @@ public class CouponCmd implements CommandExecutor {
 			else{
 				sender.sendMessage(ChatColor.RED + "Unknown command argument: " + ChatColor.DARK_RED + args[0]);
 			}
+		}
+		else{
+			sender.sendMessage(ChatColor.RED + "/coupon <create|delete|redeem|help|list>");
 		}
 		return true;
 	}

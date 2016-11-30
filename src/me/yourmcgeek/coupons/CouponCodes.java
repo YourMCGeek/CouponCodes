@@ -57,6 +57,8 @@ public class CouponCodes extends JavaPlugin {
 		for (Coupon coupon : this.couponRegistry.getCoupons())
 			// Remember that "Coupon" is ConfigurationSerializable, so it should be serialized properly :D
 			this.couponFile.getConfig().set(UUID.randomUUID().toString(), coupon);
+		this.couponFile.saveConfig();
+		
 		this.couponRegistry.clearCouponData();
 	}
 	
