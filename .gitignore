@@ -50,3 +50,5 @@ Temporary Items
 /.settings/
 .project
 .classpath
+/.externalToolBuilders/
+/src/Build.xml/
