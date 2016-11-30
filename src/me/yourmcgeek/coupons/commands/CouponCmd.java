@@ -1,7 +1,9 @@
 package me.yourmcgeek.coupons.commands;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.ChatColor;
@@ -116,8 +118,14 @@ public class CouponCmd implements CommandExecutor {
     			sender.sendMessage("                   ");
     			sender.sendMessage(green + "Use /coupon create {Code} {Number of items} {item name} to create a coupon.");
     			sender.sendMessage(green + "Use /coupon delete {Code} to delete a coupon.");
-    			sender.sendMessage(green + "Use /coupon redeem {Code} to redeem a coupon.");
+    			// TODO sender.sendMessage(green + "Use /coupon redeem {Code} to redeem a coupon.");
     			sender.sendMessage(ChatColor.DARK_RED.toString() + ChatColor.BOLD + "WARNING: MAKE SURE TO HAVE OPEN SPACE IN YOUR INVENTORY UPON REDEMTION!");
+    		}
+    		
+    		else if (args[0].equalsIgnoreCase("list")) {
+    			List<String> codes = couponRegistry.getCoupons().stream().map(Coupon::getCode).collect(Collectors.toList());
+    			sender.sendMessage(ChatColor.GREEN + "Current coupons are:");
+    			sender.sendMessage(ChatColor.GREEN + String.join(", ", codes));
     		}
     		
     		else{
