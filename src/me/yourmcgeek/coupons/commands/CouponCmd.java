@@ -11,7 +11,8 @@ import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.sender;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import me.yourmcgeek.coupons.CouponCodes;
@@ -43,7 +44,7 @@ public class CouponCmd implements CommandExecutor {
 			if (args[0].equalsIgnoreCase("create")){
 				if (!sender.hasPermission("coupons.create")){
 					sender.sendMessage(ChatColor.RED + "You do not have permission for the usage to use " + ChatColor.YELLOW + 
-							"/coupons create" + ChatColor.RED + "Please try again later.");
+							"/coupons create " + ChatColor.RED + "Please try again later.");
 					return true;
 				}
 				
@@ -96,7 +97,7 @@ public class CouponCmd implements CommandExecutor {
 			else if (args[0].equalsIgnoreCase("delete")){
 				if (!sender.hasPermission("coupons.delete")){
 					sender.sendMessage(ChatColor.RED + "You do not have permission for the usage to use " + ChatColor.YELLOW + 
-							"/coupons delete" + ChatColor.RED + "Please try again later.");
+							"/coupons delete " + ChatColor.RED + "Please try again later.");
 					return true;
 				}
 				
@@ -112,6 +113,37 @@ public class CouponCmd implements CommandExecutor {
 					sender.sendMessage(ChatColor.GREEN + "Coupon code " + ChatColor.YELLOW + code + ChatColor.GREEN + " successfully deleted");
 				}
 			}
+			
+			else if (args[0].equalsIgnoreCase("redeem")){
+				if (!(sender instanceof Player)){
+					sender.sendMessage("Only players can redeem codes, as items will be received");
+					return true;
+				}
+				
+				if (!sender.hasPermission("coupon.redeem")){
+					sender.sendMessage(ChatColor.RED + "You do not have permission for the usage to use " + ChatColor.YELLOW + 
+							"/coupons redeem " + ChatColor.RED + "Please try again later.");
+					return true;
+				}
+				
+				Player player = (Player) sender;
+				
+				if (args.length >= 2) {
+					String code = args[1];
+					if (!this.couponRegistry.couponExists(code)){
+						sender.sendMessage(ChatColor.DARK_RED + "ERROR: The following code, " + ChatColor.YELLOW + code + ChatColor.DARK_RED + ", does not exsist.");
+						sender.sendMessage(ChatColor.DARK_RED + "Please try again with a valid coupon code.");
+						return true;
+					}
+					
+					Coupon coupon = this.couponRegistry.getCoupon(code);
+					Inventory inventory = player.getInventory();
+					coupon.getRewards().forEach(i -> inventory.addItem(i));
+					coupon.setRedeemed(player);
+					
+					sender.sendMessage(ChatColor.GREEN + "You have claimed the coupon code " + ChatColor.YELLOW + code);
+				}
+			}
 
 			else if (args[0].equalsIgnoreCase("help")) {
 				ChatColor green = ChatColor.GREEN;
@@ -119,14 +151,14 @@ public class CouponCmd implements CommandExecutor {
 				sender.sendMessage("                   ");
 				sender.sendMessage(green + "Use /coupon create {Code} {Number of items} {item name} to create a coupon.");
 				sender.sendMessage(green + "Use /coupon delete {Code} to delete a coupon.");
-				// TODO sender.sendMessage(green + "Use /coupon redeem {Code} to redeem a coupon.");
+				sender.sendMessage(green + "Use /coupon redeem {Code} to redeem a coupon.");
 				sender.sendMessage(ChatColor.DARK_RED.toString() + ChatColor.BOLD + "WARNING: MAKE SURE TO HAVE OPEN SPACE IN YOUR INVENTORY UPON REDEMTION!");
 			}
 
 			else if (args[0].equalsIgnoreCase("list")) {
 				if (!sender.hasPermission("coupons.list")){
 					sender.sendMessage(ChatColor.RED + "You do not have permission for the usage to use " + ChatColor.YELLOW + 
-							"/coupons list" + ChatColor.RED + "Please try again later.");
+							"/coupons list " + ChatColor.RED + "Please try again later.");
 					return true;
 				}
 
