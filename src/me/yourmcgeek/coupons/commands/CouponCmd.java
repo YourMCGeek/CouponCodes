@@ -37,6 +37,15 @@ public class CouponCmd implements CommandExecutor {
 	 *         - <material[:data][|amount]>
 	 *       - delete <code>
 	 */
+	
+	/* Current Commands:
+	 * 
+	 * Create
+	 * List
+	 * Delete
+	 * Help
+	 * Redeem
+	 */
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -183,11 +192,12 @@ public class CouponCmd implements CommandExecutor {
 
 			else{
 				sender.sendMessage(ChatColor.RED + "Unknown command argument: " + ChatColor.DARK_RED + args[0]);
+				sender.sendMessage(ChatColor.RED + "/coupon <create|delete|redeem|help|list>");
 			}
 		}
-		else{
-			sender.sendMessage(ChatColor.RED + "/coupon <create|delete|redeem|help|list>");
-		}
+	/*	else {
+	*		sender.sendMessage(ChatColor.RED + "/coupon <create|delete|redeem|help|list>");
+	*/	
 		return true;
 	}
 }
