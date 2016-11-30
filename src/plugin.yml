@@ -8,3 +8,20 @@ commands:
       description: The central CouponCodes command
       usage: /<command> [create|delete]
       aliases: [coupons]
+    coupon create:
+      description: Create a coupon
+      usage: /<command> [create] <code> <material[:data][|amount]>
+      aliases: [coupons create]
+    coupon delete:
+      description: Delete a coupon
+      usage: /<command> [delete] <code>
+      aliases: [coupons delete]
+    coupon help:
+      description: Views the help message for Coupons
+      usage: /<command> [help]
+      aliases: [coupons create]
+    coupon list:
+      description: Views the current lists
+      usage: /<command> [list]
+      aliases: [coupons list]
+      
