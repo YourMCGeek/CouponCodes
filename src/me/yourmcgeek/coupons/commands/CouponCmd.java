@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang.math.NumberUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -189,12 +190,17 @@ public class CouponCmd implements CommandExecutor {
 				sender.sendMessage(ChatColor.GREEN + "Current coupons are:");
 				sender.sendMessage(ChatColor.GREEN + String.join(", ", codes));
 			}
+			
+			else if (args[0].equalsIgnoreCase("book")) {
+				if (!sender.hasPermission("coupons.book")) {
+					Bukkit.dispatchCommand(sender, "/give sender written_book 1 0 {pages:["[\"\",{\"text\":\"Welcome to Coupons!\",\"bold\":true,\"underlined\":true,\"color\":\"dark_green\"},{\"text\":\"\n\n\",\"color\":\"reset\"},{\"text\":\"To create a coupon, do \",\"color\":\"dark_aqua\"},{\"text\":\"/coupons create {code} [:data]|amount\",\"color\":\"dark_green\"},{\"text\":\"\n\n\",\"color\":\"reset\"},{\"text\":\"An example would be \",\"color\":\"dark_aqua\"},{\"text\":\"/coupons create CBE dirt|64\",\"color\":\"dark_green\"},{\"text\":\"\n\n\",\"color\":\"reset\"},{\"text\":\"To create that coupon,\nclick \",\"color\":\"dark_aqua\"},{\"text\":\"here\",\"color\":\"dark_aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/coupon create CBE dirt|64\"}},{\"text\":\" or type it.\",\"color\":\"dark_aqua\"},{\"text\":\"\n\n \",\"color\":\"reset\"}]","[\"\",{\"text\":\"To view the current list of coupons, you can run the command.\",\"color\":\"dark_blue\"},{\"text\":\"\n\n\",\"color\":\"reset\"},{\"text\":\"/coupons list\",\"color\":\"dark_aqua\"},{\"text\":\"\n\n\",\"color\":\"reset\"},{\"text\":\"Click \",\"color\":\"dark_blue\"},{\"text\":\"here\",\"color\":\"dark_blue\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/coupons list\"}},{\"text\":\" or type it in chat to run the command and see our freshly created CBE coupon!\",\"color\":\"dark_blue\"},{\"text\":\"\n\n \",\"color\":\"reset\"}]","[\"\",{\"text\":\"To redeem a coupon, run the command \",\"color\":\"dark_purple\"},{\"text\":\"\n\n\",\"color\":\"reset\"},{\"text\":\"/coupon redeem {code}\",\"color\":\"light_purple\"},{\"text\":\"\n\n\n\",\"color\":\"reset\"},{\"text\":\"Lets redeem our coupon by doing \",\"color\":\"dark_purple\"},{\"text\":\"\n\n\",\"color\":\"reset\"},{\"text\":\"/coupon redeem CBE\",\"color\":\"light_purple\"},{\"text\":\"\n\n\",\"color\":\"reset\"},{\"text\":\"Click \",\"color\":\"dark_purple\"},{\"text\":\"here\",\"color\":\"dark_purple\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/coupon redeem CBE\"}},{\"text\":\" or type in chat!\",\"color\":\"dark_purple\"}]","[\"\",{\"text\":\"Since we no longer need our coupon, lets delete it. To delete a coupon do,\",\"color\":\"dark_blue\"},{\"text\":\" \",\"color\":\"reset\"},{\"text\":\"/coupons delete {code}\",\"color\":\"blue\"},{\"text\":\".\n\n\",\"color\":\"reset\"},{\"text\":\"To delete our coupon, lets run \",\"color\":\"dark_blue\"},{\"text\":\"\n\n\",\"color\":\"reset\"},{\"text\":\"/coupons delete CBE\",\"color\":\"blue\"},{\"text\":\"\n\n\",\"color\":\"reset\"},{\"text\":\"Click here or type it!!\",\"color\":\"dark_blue\"},{\"text\":\"\n \",\"color\":\"reset\"}]","[\"\",{\"text\":\"Other commands include\",\"color\":\"dark_red\"},{\"text\":\"\n\n\",\"color\":\"reset\"},{\"text\":\"/coupons help\n\n/coupons book\",\"color\":\"red\"},{\"text\":\"\n\n\n \",\"color\":\"reset\"}]","[\"\",{\"text\":\"\n\"},{\"text\":\"asdfasdfasdfasdfasdfa\",\"obfuscated\":true,\"color\":\"gold\"},{\"text\":\"\n\",\"color\":\"reset\"},{\"text\":\"    Happy Couponing\n   ~ YourMCGeek and         2008Choco!! <3\",\"color\":\"dark_gray\"},{\"text\":\"\n\",\"color\":\"reset\"},{\"text\":\"asdfasdfasdfasdfasdfa\",\"obfuscated\":true,\"color\":\"gold\"},{\"text\":\"\n\n \",\"color\":\"reset\"}]"],title:"Coupons Tutorial",author:"YourMCGeek and 2008Choco",display:{Lore:["A nice little guide to Coupons!"]}}");
+				}
+			}
 
 			else{
 				sender.sendMessage(ChatColor.RED + "Unknown command argument: " + ChatColor.DARK_RED + args[0]);
 				sender.sendMessage(ChatColor.RED + "/coupon <create|delete|redeem|help|list>");
 			}
-		}
 	/*	else {
 	*		sender.sendMessage(ChatColor.RED + "/coupon <create|delete|redeem|help|list>");
 	*/	
