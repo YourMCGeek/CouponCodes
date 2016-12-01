@@ -119,6 +119,7 @@ public class Coupon implements ConfigurationSerializable {
 		this.redeemed.clear();
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public Map<String, Object> serialize() {
 		Map<String, Object> data = new HashMap<>();
@@ -127,7 +128,7 @@ public class Coupon implements ConfigurationSerializable {
 		
 		List<String> serializedItems = new ArrayList<>();
 		for (ItemStack item : this.rewards)
-			serializedItems.add(item.getType() + ":" + item.getData() + "|" + item.getAmount());
+			serializedItems.add(item.getType() + ":" + item.getData().getData() + "|" + item.getAmount());
 		data.put("rewards", serializedItems);
 		
 		List<String> redeemedUUIDS = this.redeemed.stream().distinct().map(UUID::toString).collect(Collectors.toList()); // Convert all UUIDs to Strings
@@ -138,7 +139,7 @@ public class Coupon implements ConfigurationSerializable {
 	private static final Pattern ITEM_PATTERN = Pattern.compile("(\\w+)(?:(?:\\:{1})(\\d+)){0,1}(?:(?:\\|{1})(\\d+)){0,1}");
 	
 	@SuppressWarnings("unchecked")
-	public Coupon deserialize(Map<String, Object> data) {
+	public static Coupon deserialize(Map<String, Object> data) {
 		String code = "";
 		List<UUID> redeemed = new ArrayList<>();
 		
