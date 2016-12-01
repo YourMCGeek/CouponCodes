@@ -1,8 +1,8 @@
 package me.yourmcgeek.coupons;
 
-import java.util.UUID;
-
+import org.bukkit.Material;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import me.yourmcgeek.coupons.commands.CouponCmd;
@@ -22,10 +22,13 @@ public class CouponCodes extends JavaPlugin {
 	public ConfigAccessor couponFile;
 	
 	private CouponRegistry couponRegistry;
+	private boolean generateDefaultCoupon = false;
 
 	@Override
 	public void onEnable() {
 		this.getLogger().info("CouponCodes is ready to provide discounts!");
+		if (!this.getDataFolder().exists()) 
+			this.generateDefaultCoupon = true;
 		
 		// Field initialization
 		this.couponFile = new ConfigAccessor(this, "coupons.yml");
@@ -33,20 +36,25 @@ public class CouponCodes extends JavaPlugin {
 		
 		this.couponRegistry = new CouponRegistry();
 		
-		// Event registration
-		
 		// Command registration
 		this.getCommand("coupon").setExecutor(new CouponCmd(this));
 		
 		// Load all saved coupons
-		for (String couponUUID : couponFile.getConfig().getKeys(false)){
-			Coupon coupon = (Coupon) this.couponFile.getConfig().get(couponUUID);
+		for (String couponCode : couponFile.getConfig().getKeys(false)){
+			Coupon coupon = (Coupon) this.couponFile.getConfig().get(couponCode);
 			if (coupon == null){
-				this.getLogger().warning("Could not load coupon with UUID " + couponUUID + ". Ignoring");
+				this.getLogger().warning("Could not load coupon with UUID " + couponCode + ". Ignoring");
 				continue;
 			}
 			
 			this.couponRegistry.registerCoupon(coupon);
+		}
+		
+		// Generate default coupon
+		if (generateDefaultCoupon){
+			this.couponRegistry.createCoupon("default", new ItemStack(Material.DIAMOND));
+			this.getLogger().info("Generated default coupon");
+			this.getLogger().info("Code: \"default\"");
 		}
 	}
 
@@ -56,7 +64,7 @@ public class CouponCodes extends JavaPlugin {
 		
 		for (Coupon coupon : this.couponRegistry.getCoupons())
 			// Remember that "Coupon" is ConfigurationSerializable, so it should be serialized properly :D
-			this.couponFile.getConfig().set(UUID.randomUUID().toString(), coupon);
+			this.couponFile.getConfig().set(coupon.getCode(), coupon);
 		this.couponFile.saveConfig();
 		
 		this.couponRegistry.clearCouponData();
