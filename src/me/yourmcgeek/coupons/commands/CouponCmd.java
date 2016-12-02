@@ -1,6 +1,5 @@
 package me.yourmcgeek.coupons.commands;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -15,7 +14,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.BookMeta;
 
 import me.yourmcgeek.coupons.CouponCodes;
 import me.yourmcgeek.coupons.utils.Coupon;
@@ -28,8 +26,10 @@ public class CouponCmd implements CommandExecutor {
 
 	private static final Pattern ITEM_PATTERN = Pattern.compile("(\\w+)(?:(?:\\:{1})(\\d+)){0,1}(?:(?:\\|{1})(\\d+)){0,1}");
 
+	private final CouponCodes plugin;
 	private final CouponRegistry couponRegistry;
 	public CouponCmd(CouponCodes plugin) {
+		this.plugin = plugin;
 		this.couponRegistry = plugin.getCouponRegistry();
 	}
 
@@ -193,39 +193,20 @@ public class CouponCmd implements CommandExecutor {
 			}
 			
 			else if (args[0].equalsIgnoreCase("book")) {
-				
-				String Title = "Coupons Help Book";
-				String Author = "YourMCGeek and 2008Choco";
-				String displayName = "§3§lCoupons Help Book";
-				String Lore = "A nice little guide to Coupons!";
-				
-
-				
-				if (!sender.hasPermission("coupons.book")) {
-					
-					ItemStack book = new ItemStack(Material.WRITTEN_BOOK, 1);
-					BookMeta bMeta = (BookMeta) book.getItemMeta();
-					bMeta.setDisplayName(displayName);
-					ArrayList<String> mLore = new ArrayList<String>();
-					mLore.add(Lore);
-					bMeta.setLore(mLore);
-					bMeta.setAuthor(Author);
-					bMeta.setTitle(Title);
-					
-					String [] pages = new String[17];
-					
-					//Page 1:
-					pages[0] = ChatColor.DARK_GREEN + "" + ChatColor.BOLD + ChatColor.UNDERLINE + "Welcome to Coupons!\n" + 
-					ChatColor.BLUE + "To create a coupon, run" + ChatColor.DARK_GREEN + " /coupons create {code} <material>[:data]|amount. \n" +
-							ChatColor.BLUE + "An example would be " + ChatColor.DARK_GREEN + "/coupons create CBE dirt|64";					
-					
-					bMeta.setPages(pages);
-					book.setItemMeta(bMeta);
-					((Player) sender).getInventory().addItem(book);
-					
-					
-					
+				if (!(sender instanceof Player)){
+					sender.sendMessage("Only players can run this command, as items will be received");
+					return true;
 				}
+				
+				Player player = (Player) sender;
+				
+				if (!player.hasPermission("coupons.book")) {
+					player.sendMessage(ChatColor.RED + "You do not have permission for the usage to use " + ChatColor.YELLOW + 
+							"/coupons book " + ChatColor.RED + "Please try again later.");
+					return true;
+				}
+				
+				player.getInventory().addItem(this.plugin.getInfoBook());
 			}
 
 			else{
@@ -235,7 +216,7 @@ public class CouponCmd implements CommandExecutor {
 	/*	else {
 	*		sender.sendMessage(ChatColor.RED + "/coupon <create|delete|redeem|help|list>");
 	*/	
-	}
+		}
 		return true;
 	}
 }

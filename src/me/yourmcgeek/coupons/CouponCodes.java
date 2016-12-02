@@ -8,6 +8,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import me.yourmcgeek.coupons.commands.CouponCmd;
 import me.yourmcgeek.coupons.utils.Coupon;
 import me.yourmcgeek.coupons.utils.CouponRegistry;
+import me.yourmcgeek.coupons.utils.general.BookUtils;
 import me.yourmcgeek.coupons.utils.general.ConfigAccessor;
 
 /**
@@ -18,6 +19,8 @@ public class CouponCodes extends JavaPlugin {
 	static{
 		ConfigurationSerialization.registerClass(Coupon.class, "Coupon");
 	}
+	
+	private ItemStack infoBook;
 	
 	public ConfigAccessor couponFile;
 	
@@ -35,6 +38,7 @@ public class CouponCodes extends JavaPlugin {
 		this.couponFile.loadConfig();
 		
 		this.couponRegistry = new CouponRegistry();
+		this.infoBook = BookUtils.generateBook(this);
 		
 		// Command registration
 		this.getCommand("coupon").setExecutor(new CouponCmd(this));
@@ -75,5 +79,9 @@ public class CouponCodes extends JavaPlugin {
 	 */
 	public CouponRegistry getCouponRegistry() {
 		return couponRegistry;
+	}
+	
+	public ItemStack getInfoBook() {
+		return infoBook;
 	}
 }
