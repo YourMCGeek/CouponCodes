@@ -58,7 +58,7 @@ public class BookUtils {
 					BLUE + "/coupons delete CBE",
 			
 			DARK_RED + "Other Coupon commands include\n\n" + RED + "/coupons help" + "\n\n/coupons book\n\n" +
-			DARK_RED + "Make sure to check " + RED + "/coupons help" + DARK_RED + 
+			DARK_RED + "Make sure to check " + RED + "   /coupons help" + DARK_RED + 
 			" as that will always be updated with current commands.",
 			
 			"\n\n" + GOLD + MAGIC + "1234567891234567890" + "\n\n" + 
