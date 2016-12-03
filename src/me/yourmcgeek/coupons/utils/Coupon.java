@@ -136,7 +136,7 @@ public class Coupon implements ConfigurationSerializable {
 		return data;
 	}
 	
-	private static final Pattern ITEM_PATTERN = Pattern.compile("(\\w+)(?:(?:\\:{1})(\\d+)){0,1}(?:(?:\\|{1})(\\d+)){0,1}");
+	private static final Pattern ITEM_PATTERN = Pattern.compile("(\\w+)(?:(?:\\:{1})(\\d+)){0,1}(?:(?:\\;{1})(\\d+)){0,1}");
 	
 	@SuppressWarnings("unchecked")
 	public static Coupon deserialize(Map<String, Object> data) {
@@ -159,7 +159,8 @@ public class Coupon implements ConfigurationSerializable {
 				String itemDataString = matcher.group(2);
 				String itemCountString = matcher.group(3);
 				
-				Material material = Material.getMaterial(materialString);
+				@SuppressWarnings("deprecation")
+				Material material = NumberUtils.isNumber(materialString) ? Material.getMaterial(Integer.valueOf(materialString)) : Material.getMaterial(materialString);
 				byte itemData = NumberUtils.toByte(itemDataString);
 				int itemCount = NumberUtils.toInt(itemCountString, 1);
 				
