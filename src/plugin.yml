@@ -1,7 +1,7 @@
 name: CouponCodes
 main: me.yourmcgeek.coupons.CouponCodes
 version: 0.1
-description: N/A (Not clarified)
+description: A nice plugin that provides a way to award players in a fun mannor!
 author: YourMCGeek, 2008Choco
 commands:
     coupon:
@@ -24,4 +24,8 @@ commands:
       description: Views the current lists
       usage: /<command> [list]
       aliases: [coupons list]
+    coupon book:
+      description: Provides a nice little guide to Coupons!
+      usage: /<command> [book]
+      aliases: [coupons book]
       
