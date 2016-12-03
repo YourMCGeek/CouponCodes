@@ -215,15 +215,23 @@ public class CouponCmd implements CommandExecutor {
 				
 				player.getInventory().addItem(this.plugin.getInfoBook());
 			}
-
+			
+			
 			else{
 				sender.sendMessage(ChatColor.RED + "Unknown command argument: " + ChatColor.DARK_RED + args[0]);
 				sender.sendMessage(ChatColor.RED + "/coupon <create|delete|redeem|help|list|book>");
 			}
-	/*	else {
-	*		sender.sendMessage(ChatColor.RED + "/coupon <create|delete|redeem|help|list>");
-	*/	
+
+
+				
+			
+		
 		}
+		
+		else {
+			((Player) sender).performCommand("/coupons help");
+		}
+		
 		return true;
 	}
 }

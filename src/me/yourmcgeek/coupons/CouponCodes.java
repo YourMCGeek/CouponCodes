@@ -20,6 +20,7 @@ public class CouponCodes extends JavaPlugin {
 		ConfigurationSerialization.registerClass(Coupon.class, "Coupon");
 	}
 	
+	
 	private ItemStack infoBook;
 	
 	public ConfigAccessor couponFile;
@@ -60,6 +61,7 @@ public class CouponCodes extends JavaPlugin {
 			this.getLogger().info("Generated default coupon");
 			this.getLogger().info("Code: \"default\"");
 		}
+		
 	}
 
 	@Override
