@@ -221,6 +221,9 @@ public class CouponCmd implements CommandExecutor {
 				player.getInventory().addItem(this.plugin.getInfoBook());
 			}
 			
+			else if (args[0].equalsIgnoreCase("reload")) {
+				plugin.couponFile.reloadConfig();
+			}
 			
 			
 			else{
