@@ -24,7 +24,7 @@ import me.yourmcgeek.coupons.utils.CouponRegistry;
  */
 public class CouponCmd implements CommandExecutor {
 
-	private static final Pattern ITEM_PATTERN = Pattern.compile("(\\w+)(?:(?:\\:{1})(\\d+)){0,1}(?:(?:\\s+)(\\d+)){0,1}");
+	private static final Pattern ITEM_PATTERN = Pattern.compile("(\\w+)(?:(?:\\:{1})(\\d+)){0,1}(?:(?:\\;{1})(\\d+)){0,1}");
 
 	private final CouponCodes plugin;
 	private final CouponRegistry couponRegistry;

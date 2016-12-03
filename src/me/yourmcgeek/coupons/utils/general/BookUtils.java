@@ -43,7 +43,7 @@ public class BookUtils {
 		
 		bookMeta.addPage(
 			DARK_GREEN + "" + BOLD + UNDERLINE + "Welcome to Coupons!\n\n" + RESET + DARK_AQUA +
-			"To create a coupon, do " + DARK_GREEN + "\n/coupons create {code} <material>[:data]|amount\n\n" 
+			"To create a coupon, do " + DARK_GREEN + "\n/coupons create {code} <material>[:data][;amount]\n\n" 
 			+ DARK_AQUA + "An example would be   " + DARK_GREEN 
 			+ "/coupons create CBE dirt|64",
 			
