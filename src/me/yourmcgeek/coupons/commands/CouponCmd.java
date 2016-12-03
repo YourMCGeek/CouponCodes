@@ -24,7 +24,7 @@ import me.yourmcgeek.coupons.utils.CouponRegistry;
  */
 public class CouponCmd implements CommandExecutor {
 
-	private static final Pattern ITEM_PATTERN = Pattern.compile("(\\w+)(?:(?:\\:{1})(\\d+)){0,1}(?:(?:\\|{1})(\\d+)){0,1}");
+	private static final Pattern ITEM_PATTERN = Pattern.compile("(\\w+)(?:(?:\\:{1})(\\d+)){0,1}(?:(?:\\s+)(\\d+)){0,1}");
 
 	private final CouponCodes plugin;
 	private final CouponRegistry couponRegistry;
@@ -49,6 +49,7 @@ public class CouponCmd implements CommandExecutor {
 	 * Redeem
 	 */
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if (args.length >= 1){
@@ -81,8 +82,8 @@ public class CouponCmd implements CommandExecutor {
 							String materialString = matcher.group(1).toUpperCase();
 							String itemDataString = matcher.group(2);
 							String itemCountString = matcher.group(3);
-
-							Material material = Material.getMaterial(materialString);
+							
+							Material material = NumberUtils.isNumber(materialString) ? Material.getMaterial(Integer.valueOf(materialString)) : Material.getMaterial(materialString);
 							byte itemData = NumberUtils.toByte(itemDataString);
 							int itemCount = NumberUtils.toInt(itemCountString, 1);
 
@@ -93,7 +94,7 @@ public class CouponCmd implements CommandExecutor {
 							
 							if (material == Material.AIR) {
 								sender.sendMessage(ChatColor.RED + "You cannot create a material with the value of \"" + materialString + "\". Ignorning");
-								return false;
+								return true;
 							}
 
 							ItemStack item = new ItemStack(material, itemCount, itemData);
