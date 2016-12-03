@@ -183,7 +183,7 @@ public class CouponCmd implements CommandExecutor {
 				sender.sendMessage(green + "Use /coupon delete {Code} to delete a coupon.");
 				sender.sendMessage(green + "Use /coupon redeem {Code} to redeem a coupon.");
 				sender.sendMessage(green + "Use /coupon book to get your nifty little guide.");
-				sender.sendMessage(ChatColor.DARK_RED.toString() + ChatColor.BOLD + "WARNING: MAKE SURE TO HAVE OPEN SPACE IN YOUR INVENTORY UPON REDEMTION!");
+				sender.sendMessage(ChatColor.DARK_RED.toString() + ChatColor.BOLD + "WARNING: MAKE SURE TO HAVE OPEN SPACE IN YOUR INVENTORY UPON REDEMPTION!");
 			}
 
 			else if (args[0].equalsIgnoreCase("list")) {
@@ -194,7 +194,7 @@ public class CouponCmd implements CommandExecutor {
 				}
 
 				List<String> codes = couponRegistry.getCoupons().stream().map(Coupon::getCode).collect(Collectors.toList());
-				sender.sendMessage(ChatColor.GREEN + "Current coupons are:");
+				sender.sendMessage(ChatColor.DARK_GREEN + "Current coupons are:");
 				sender.sendMessage(ChatColor.GREEN + String.join(", ", codes));
 			}
 			
