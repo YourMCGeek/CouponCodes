@@ -90,6 +90,11 @@ public class CouponCmd implements CommandExecutor {
 								sender.sendMessage(ChatColor.RED + "Unknown material value, \"" + materialString + "\". Ignoring");
 								continue;
 							}
+							
+							if (material == Material.AIR) {
+								sender.sendMessage(ChatColor.RED + "You cannot create a material with the value of \"" + materialString + "\". Ignorning");
+								return false;
+							}
 
 							ItemStack item = new ItemStack(material, itemCount, itemData);
 							coupon.addRewards(item);
@@ -174,9 +179,10 @@ public class CouponCmd implements CommandExecutor {
 				ChatColor green = ChatColor.GREEN;
 				sender.sendMessage(green + "Welcome to CouponCodes Help Message!");
 				sender.sendMessage("                   ");
-				sender.sendMessage(green + "Use /coupon create {Code} {Number of items} {item name} to create a coupon.");
+				sender.sendMessage(green + "Use /coupon create {Code} <material>[:data]|amount to create a coupon.");
 				sender.sendMessage(green + "Use /coupon delete {Code} to delete a coupon.");
 				sender.sendMessage(green + "Use /coupon redeem {Code} to redeem a coupon.");
+				sender.sendMessage(green + "Use /coupon book to get your nifty little guide.");
 				sender.sendMessage(ChatColor.DARK_RED.toString() + ChatColor.BOLD + "WARNING: MAKE SURE TO HAVE OPEN SPACE IN YOUR INVENTORY UPON REDEMTION!");
 			}
 
@@ -211,7 +217,7 @@ public class CouponCmd implements CommandExecutor {
 
 			else{
 				sender.sendMessage(ChatColor.RED + "Unknown command argument: " + ChatColor.DARK_RED + args[0]);
-				sender.sendMessage(ChatColor.RED + "/coupon <create|delete|redeem|help|list>");
+				sender.sendMessage(ChatColor.RED + "/coupon <create|delete|redeem|help|list|book>");
 			}
 	/*	else {
 	*		sender.sendMessage(ChatColor.RED + "/coupon <create|delete|redeem|help|list>");
