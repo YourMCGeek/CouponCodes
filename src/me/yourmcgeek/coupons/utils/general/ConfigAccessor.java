@@ -11,11 +11,11 @@ import org.bukkit.plugin.java.JavaPlugin;
  
 public class ConfigAccessor {
  
-    private final String fileName;
-    private final JavaPlugin plugin;
+    public final String fileName;
+    public final JavaPlugin plugin;
     
-    private File configFile;
-    private FileConfiguration fileConfiguration;
+    public File configFile;
+    public FileConfiguration fileConfiguration;
  
 	public ConfigAccessor(JavaPlugin plugin, String fileName){
         this.plugin = plugin;

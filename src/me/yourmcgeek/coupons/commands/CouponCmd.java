@@ -1,5 +1,7 @@
 package me.yourmcgeek.coupons.commands;
 
+import java.io.File;
+import java.io.InputStream;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -11,9 +13,12 @@ import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import me.yourmcgeek.coupons.CouponCodes;
 import me.yourmcgeek.coupons.utils.Coupon;
@@ -217,6 +222,7 @@ public class CouponCmd implements CommandExecutor {
 			}
 			
 			
+			
 			else{
 				sender.sendMessage(ChatColor.RED + "Unknown command argument: " + ChatColor.DARK_RED + args[0]);
 				sender.sendMessage(ChatColor.RED + "/coupon <create|delete|redeem|help|list|book>");
@@ -229,7 +235,7 @@ public class CouponCmd implements CommandExecutor {
 		}
 		
 		else {
-			((Player) sender).performCommand("/coupons help");
+			((Player) sender).performCommand("coupon help");
 		}
 		
 		return true;
