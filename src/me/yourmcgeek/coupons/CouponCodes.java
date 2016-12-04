@@ -1,6 +1,7 @@
 package me.yourmcgeek.coupons;
 
 import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -17,6 +18,7 @@ import me.yourmcgeek.coupons.utils.locale.Locale;
  */
 public class CouponCodes extends JavaPlugin {
 	
+
 	static{
 		ConfigurationSerialization.registerClass(Coupon.class, "Coupon");
 	}
@@ -28,6 +30,9 @@ public class CouponCodes extends JavaPlugin {
 	
 	private CouponRegistry couponRegistry;
 	private boolean generateDefaultCoupon = false;
+	
+	FileConfiguration config = getConfig();
+
 
 	@Override
 	public void onEnable() {
@@ -68,6 +73,12 @@ public class CouponCodes extends JavaPlugin {
 			this.getLogger().info("Generated default coupon");
 			this.getLogger().info("Code: \"default\"");
 		}
+		
+		// Generate Book config
+		this.getConfig();
+		config.addDefault(BookUtils.COLOR_DISPLAY_NAME, true);
+		
+		
 	}
 
 	@Override

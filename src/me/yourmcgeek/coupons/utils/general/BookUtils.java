@@ -13,9 +13,10 @@ import me.yourmcgeek.coupons.CouponCodes;
 
 public class BookUtils {
 	
-	private static final String TITLE = "Coupons Help Book", AUTHORS = "YourMCGeek & 2008Choco";
-	private static final String DISPLAY_NAME = DARK_AQUA.toString() + BOLD + "Coupons Help Book";
-	private static final List<String> LORE = Arrays.asList("A nice little guide to CouponCodes!");
+	public static final String TITLE = "Coupons Help Book", AUTHORS = "YourMCGeek & 2008Choco";
+	public static final String COLOR_DISPLAY_NAME = DARK_AQUA.toString() + BOLD + "Coupons Help Book";
+	public static final List<String> LORE = Arrays.asList("A nice little guide to CouponCodes!");
+	public static final String DISPLAY_NAME = "Coupons Help Book";
 	
 	/* Previous code:
 	   
@@ -31,12 +32,20 @@ public class BookUtils {
 		BookMeta bookMeta = (BookMeta) book.getItemMeta();
 		
 		
+		if (plugin.getConfig().getBoolean(COLOR_DISPLAY_NAME) == true) {
+			bookMeta.setDisplayName(COLOR_DISPLAY_NAME);
+		}
+		
+		else if (plugin.getConfig().getBoolean(DISPLAY_NAME) == false) {
+			bookMeta.setDisplayName(DISPLAY_NAME);
+		}
+				
 		// Book information
 		
 		bookMeta.setTitle(TITLE);
 		bookMeta.setAuthor(AUTHORS);
-		bookMeta.setDisplayName(DISPLAY_NAME);
 		bookMeta.setLore(LORE);
+		
 		
 		
 		// Page generation
