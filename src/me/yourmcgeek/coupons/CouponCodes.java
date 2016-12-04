@@ -10,6 +10,7 @@ import me.yourmcgeek.coupons.utils.Coupon;
 import me.yourmcgeek.coupons.utils.CouponRegistry;
 import me.yourmcgeek.coupons.utils.general.BookUtils;
 import me.yourmcgeek.coupons.utils.general.ConfigAccessor;
+import me.yourmcgeek.coupons.utils.locale.Locale;
 
 /**
  * Created by YourMCGeek and 2008Choco on 11/26/2016.
@@ -20,9 +21,9 @@ public class CouponCodes extends JavaPlugin {
 		ConfigurationSerialization.registerClass(Coupon.class, "Coupon");
 	}
 	
-	
 	private ItemStack infoBook;
-	
+
+	private Locale locale;
 	public ConfigAccessor couponFile;
 	
 	private CouponRegistry couponRegistry;
@@ -33,6 +34,12 @@ public class CouponCodes extends JavaPlugin {
 		this.getLogger().info("CouponCodes is ready to provide discounts!");
 		if (!this.getDataFolder().exists()) 
 			this.generateDefaultCoupon = true;
+		this.saveDefaultConfig();
+		
+		// Generate localizations
+		Locale.saveDefaultLocale("en_US");
+		Locale.saveDefaultLocale("fr_CA");
+		locale = Locale.getLocale(this.getConfig().getString("Locale", "en_US"));
 		
 		// Field initialization
 		this.couponFile = new ConfigAccessor(this, "coupons.yml");
@@ -61,7 +68,6 @@ public class CouponCodes extends JavaPlugin {
 			this.getLogger().info("Generated default coupon");
 			this.getLogger().info("Code: \"default\"");
 		}
-		
 	}
 
 	@Override
@@ -83,7 +89,17 @@ public class CouponCodes extends JavaPlugin {
 		return couponRegistry;
 	}
 	
+	/** Get the informational book ItemStack for CouponCodes
+	 * @return informational book
+	 */
 	public ItemStack getInfoBook() {
 		return infoBook;
+	}
+	
+	/** Get the currently active locale
+	 * @return active locale
+	 */
+	public Locale getLocale() {
+		return locale;
 	}
 }
