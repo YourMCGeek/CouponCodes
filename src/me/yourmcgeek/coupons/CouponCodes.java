@@ -73,12 +73,6 @@ public class CouponCodes extends JavaPlugin {
 			this.getLogger().info("Generated default coupon");
 			this.getLogger().info("Code: \"default\"");
 		}
-		
-		// Generate Book config
-		this.getConfig();
-		config.addDefault(BookUtils.COLOR_DISPLAY_NAME, true);
-		
-		
 	}
 
 	@Override
