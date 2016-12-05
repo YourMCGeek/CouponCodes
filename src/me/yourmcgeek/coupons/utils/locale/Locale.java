@@ -13,20 +13,18 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
-import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import com.google.common.collect.Lists;
-
-import me.yourmcgeek.coupons.CouponCodes;
 
 /** Assist in the creation of multiple localizations and languages,
  * as well as the generation of default .lang files
  * @author Parker Hawke - 2008Choco
  */
 public class Locale {
-	
+
+	private static JavaPlugin plugin;
 	private static final Collection<Locale> locales = Lists.newArrayList();
-	private static final Plugin plugin = CouponCodes.getPlugin(CouponCodes.class);
 	
 	private static final Pattern NODE_PATTERN = Pattern.compile("((?:\\w+\\.{1})*(?:\\w+){1})(?:\\s*=\\s*){1}\"(.*)\"");
 	
@@ -34,17 +32,15 @@ public class Locale {
 	private static final String FILE_EXTENSION = ".lang";
 	private static final File LOCALE_FOLDER = new File(LOCALE_FOLDER_PATH);
 	
-	static{
-		LOCALE_FOLDER.mkdirs();
-		Locale.searchForLocales();
-	}
-	
 	private final Map<String, String> nodes = new HashMap<>();
 	
 	private final File file;
 	private final String name, region;
 	
-	public Locale(String name, String region) {
+	private Locale(String name, String region) {
+		if (plugin == null)
+			throw new IllegalStateException("Cannot generate locales without first initializing the class (Locale#init(JavaPlugin))");
+		
 		this.name = name.toLowerCase();
 		this.region = region.toUpperCase();
 		
@@ -128,6 +124,17 @@ public class Locale {
 	 */
 	public Map<String, String> getMessageNodeMap() {
 		return nodes;
+	}
+	
+	/** Initialize the locale class to generate information and search
+	 * for localizations
+	 * @param plugin - The plugin instance
+	 */
+	public static void init(JavaPlugin plugin) {
+		Locale.plugin = plugin;
+		
+		LOCALE_FOLDER.mkdirs();
+		Locale.searchForLocales();
 	}
 	
 	/**

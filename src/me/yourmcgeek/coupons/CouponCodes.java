@@ -33,7 +33,6 @@ public class CouponCodes extends JavaPlugin {
 	
 	FileConfiguration config = getConfig();
 
-
 	@Override
 	public void onEnable() {
 		this.getLogger().info("CouponCodes is ready to provide discounts!");
@@ -42,6 +41,7 @@ public class CouponCodes extends JavaPlugin {
 		this.saveDefaultConfig();
 		
 		// Generate localizations
+		Locale.init(this);
 		Locale.saveDefaultLocale("en_US");
 		Locale.saveDefaultLocale("fr_CA");
 		locale = Locale.getLocale(this.getConfig().getString("Locale", "en_US"));
