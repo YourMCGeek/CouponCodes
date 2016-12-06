@@ -6,8 +6,8 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.io.IOUtils;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
 /** Assist in the creation of multiple localizations and languages,
@@ -24,7 +25,7 @@ import com.google.common.collect.Lists;
 public class Locale {
 
 	private static JavaPlugin plugin;
-	private static final Collection<Locale> locales = Lists.newArrayList();
+	private static final List<Locale> locales = Lists.newArrayList();
 	
 	private static final Pattern NODE_PATTERN = Pattern.compile("((?:\\w+\\.{1})*(?:\\w+){1})(?:\\s*=\\s*){1}\"(.*)\"");
 	
@@ -47,30 +48,7 @@ public class Locale {
 		String fileName = name + "_" + region + FILE_EXTENSION;
 		this.file = new File(LOCALE_FOLDER, fileName);
 		
-		if (this.file.exists()){
-			try(BufferedReader reader = new BufferedReader(new FileReader(file))){
-				String line;
-				for (int lineNumber = 0; (line = reader.readLine()) != null; lineNumber++){
-					if (line.trim().length() == 0 || line.startsWith("#") /* Comment */) continue;
-					
-					Matcher matcher = NODE_PATTERN.matcher(line);
-					if (!matcher.find()){
-						System.err.println("Invalid locale syntax at (line=" + lineNumber + ")");
-						continue;
-					}
-					
-					String node = matcher.group(1);
-					String value = matcher.group(2);
-					nodes.put(node, value);
-				}
-			}catch(IOException e){
-				e.printStackTrace();
-			}
-		}
-		else{
-			System.err.println("Could not find file for locale " + fileName);
-			return;
-		}
+		if (this.reloadMessages()) return;
 		
 		plugin.getLogger().info("Loaded locale " + fileName);
 	}
@@ -124,6 +102,39 @@ public class Locale {
 	 */
 	public Map<String, String> getMessageNodeMap() {
 		return nodes;
+	}
+	
+	/** Clear the previous message cache, and load new messages directly from file
+	 * @return reload messages from file
+	 */
+	public boolean reloadMessages() {
+		if (!this.file.exists()){
+			plugin.getLogger().warning("Could not find file for locale " + this.name);
+			return false;
+		}
+		
+		this.nodes.clear(); // Clear previous data (if any)
+		
+		try(BufferedReader reader = new BufferedReader(new FileReader(file))){
+			String line;
+			for (int lineNumber = 0; (line = reader.readLine()) != null; lineNumber++){
+				if (line.trim().length() == 0 || line.startsWith("#") /* Comment */) continue;
+				
+				Matcher matcher = NODE_PATTERN.matcher(line);
+				if (!matcher.find()){
+					System.err.println("Invalid locale syntax at (line=" + lineNumber + ")");
+					continue;
+				}
+				
+				String node = matcher.group(1);
+				String value = matcher.group(2);
+				nodes.put(node, value);
+			}
+		}catch(IOException e){
+			e.printStackTrace();
+			return false;
+		}
+		return true;
 	}
 	
 	/** Initialize the locale class to generate information and search
@@ -188,6 +199,13 @@ public class Locale {
 		for (Locale locale : locales)
 			if (locale.getRegion().equalsIgnoreCase(region)) return locale;
 		return null;
+	}
+	
+	/** Get an immutable list of all currently loaded locales
+	 * @return list of all locales
+	 */
+	public static List<Locale> getLocales() {
+		return ImmutableList.copyOf(locales);
 	}
 	
 	/**

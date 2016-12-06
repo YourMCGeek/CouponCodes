@@ -18,6 +18,7 @@ import org.bukkit.inventory.ItemStack;
 import me.yourmcgeek.coupons.CouponCodes;
 import me.yourmcgeek.coupons.utils.Coupon;
 import me.yourmcgeek.coupons.utils.CouponRegistry;
+import me.yourmcgeek.coupons.utils.locale.Locale;
 
 /**
  * Created by YourMCGeek on 11/26/2016.
@@ -218,6 +219,11 @@ public class CouponCmd implements CommandExecutor {
 			
 			else if (args[0].equalsIgnoreCase("reload")) {
 				plugin.couponFile.reloadConfig();
+				for (Locale locale : Locale.getLocales()){
+					if (!locale.reloadMessages())
+						sender.sendMessage(ChatColor.RED + "Could not reload message for locale " + locale.getName());
+				}
+				
 				sender.sendMessage(ChatColor.GREEN + "Configuration file successfully reloaded");
 			}
 			
