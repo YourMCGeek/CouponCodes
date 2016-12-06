@@ -83,7 +83,7 @@ public class Locale {
 	 * @return the message for the specified node
 	 */
 	public String getMessage(String node) {
-		return this.nodes.get(node);
+		return this.getMessageOrDefault(node, node);
 	}
 	
 	/** 
