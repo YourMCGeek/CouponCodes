@@ -94,7 +94,7 @@ public class CouponCmd implements CommandExecutor {
 							
 							if (material == Material.AIR) {
 								sender.sendMessage(ChatColor.RED + "You cannot create a material with the value of \"" + materialString + "\". Ignorning");
-								return true;
+								continue;
 							}
 
 							ItemStack item = new ItemStack(material, itemCount, itemData);
@@ -218,6 +218,7 @@ public class CouponCmd implements CommandExecutor {
 			
 			else if (args[0].equalsIgnoreCase("reload")) {
 				plugin.couponFile.reloadConfig();
+				sender.sendMessage(ChatColor.GREEN + "Configuration file successfully reloaded");
 			}
 			
 			
