@@ -5,7 +5,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import me.yourmcgeek.coupons.CouponCodes;
 import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -16,6 +15,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import me.yourmcgeek.coupons.CouponCodes;
 import me.yourmcgeek.coupons.coupon.Coupon;
 import me.yourmcgeek.coupons.coupon.CouponRegistry;
 import me.yourmcgeek.coupons.utils.locale.Locale;
@@ -213,8 +213,6 @@ public class CouponCmd implements CommandExecutor {
 		}
 		
 		else if (args[0].equalsIgnoreCase("reload")) {
-			this.plugin.couponFile.reloadConfig();
-			
 			for (Locale locale : Locale.getLocales()) {
 				if (!locale.reloadMessages()) {
 					sender.sendMessage(ChatColor.RED + "Could not reload message for locale " + locale.getName());

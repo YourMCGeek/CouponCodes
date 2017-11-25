@@ -1,23 +1,27 @@
 package me.yourmcgeek.coupons.coupon;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 
 import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.Material;
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
-import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -26,8 +30,7 @@ import org.bukkit.inventory.ItemStack;
  * 
  * @author Parker Hawke - 2008Choco
  */
-@SerializableAs("Coupon")
-public class Coupon implements ConfigurationSerializable {
+public class Coupon {
 	
 	private final List<UUID> redeemed = new ArrayList<>();
 	
@@ -141,69 +144,86 @@ public class Coupon implements ConfigurationSerializable {
 		this.redeemed.clear();
 	}
 	
-	@Override
-	@SuppressWarnings("deprecation") // TODO Will have to fix this for 1.13
-	public Map<String, Object> serialize() {
-		Map<String, Object> data = new HashMap<>();
+	public static final class CouponSerializer implements JsonSerializer<Coupon> {
 		
-		data.put("code", this.code);
-		
-		List<String> serializedItems = new ArrayList<>();
-		for (ItemStack item : this.rewards)
-			serializedItems.add(item.getType() + ":" + item.getData().getData() + "|" + item.getAmount());
-		data.put("rewards", serializedItems);
-		
-		 // Convert all UUIDs to Strings
-		List<String> redeemedUUIDS = this.redeemed.stream()
-				.distinct()
-				.map(UUID::toString)
-				.collect(Collectors.toList());
-		data.put("redeemed", redeemedUUIDS);
-		return data;
-	}
-	
-	private static final Pattern ITEM_PATTERN = Pattern.compile("(\\w+)(?:(?:\\:{1})(\\d+)){0,1}(?:(?:\\;{1})(\\d+)){0,1}");
-	
-	@SuppressWarnings("unchecked")
-	public static Coupon deserialize(Map<String, Object> data) {
-		if (!data.containsKey("code")) return null;
-		
-		String code = (String) data.get("code");
-		List<UUID> redeemed = new ArrayList<>();
-		
-		Coupon coupon = new Coupon(code);
-		
-		if (data.containsKey("rewards")) {
-			String rewardString = String.join(",", (List<String>) data.get("rewards"));
-			Matcher matcher = ITEM_PATTERN.matcher(rewardString);
+		@Override
+		@SuppressWarnings("deprecation") // TODO Will have to fix this for 1.13
+		public JsonElement serialize(Coupon coupon, Type type, JsonSerializationContext context) {
+			JsonObject root = new JsonObject();
 			
-			while (matcher.find()) {
-				String materialString = matcher.group(1).toUpperCase();
-				String itemDataString = matcher.group(2);
-				String itemCountString = matcher.group(3);
-				
-				@SuppressWarnings("deprecation")
-				Material material = NumberUtils.isNumber(materialString)
-						? Material.getMaterial(Integer.valueOf(materialString))
-						: Material.getMaterial(materialString);
-				byte itemData = NumberUtils.toByte(itemDataString);
-				int itemCount = NumberUtils.toInt(itemCountString, 1);
-				
-				if (material == null) continue;
-				
-				ItemStack item = new ItemStack(material, itemCount, itemData);
-				coupon.addRewards(item);
+			root.addProperty("code", coupon.code);
+			
+			if (!coupon.redeemed.isEmpty()) {
+				JsonArray redeemedData = new JsonArray();
+				for (UUID redeemer : coupon.redeemed) {
+					redeemedData.add(redeemer.toString());
+				}
+				root.add("redeemed", redeemedData);
 			}
-		}
-		
-		if (data.containsKey("redeemed")) {
-			List<String> redeemedStrings = (List<String>) data.get("redeemed");
-			for (String redeemedString : redeemedStrings)
-				redeemed.add(UUID.fromString(redeemedString));
 			
-			coupon.redeemed.addAll(redeemed);
+			if (!coupon.rewards.isEmpty()) {
+				JsonArray rewardData = new JsonArray();
+				for (ItemStack reward : coupon.rewards) {
+					rewardData.add(reward.getType() + ":" + reward.getData().getData() + "|" + reward.getAmount());
+				}
+				root.add("rewards", rewardData);
+			}
+			
+			return root;
 		}
 		
-		return coupon;
 	}
+	
+	public static final class CouponDeserializer implements JsonDeserializer<Coupon> {
+
+		private static final Pattern ITEM_PATTERN = Pattern.compile("(\\w+)(?:(?:\\:{1})(\\d+)){0,1}(?:(?:\\;{1})(\\d+)){0,1}");
+		
+		@Override
+		public Coupon deserialize(JsonElement data, Type type, JsonDeserializationContext context) throws JsonParseException {
+			if (!data.isJsonObject()) return null;
+			
+			JsonObject root = data.getAsJsonObject();
+			String code = root.get("code").getAsString();
+			
+			Coupon coupon = new Coupon(code);
+			
+			// Redeemed UUIDs
+			if (root.has("redeemed")) {
+				JsonArray redeemedData = root.getAsJsonArray("redeemed");
+				for (JsonElement redeemer : redeemedData) {
+					coupon.redeemed.add(UUID.fromString(redeemer.getAsString()));
+				}
+			}
+			
+			// Parsing loot data
+			if (root.has("rewards")) {
+				JsonArray rewardData = root.getAsJsonArray("rewards");
+				for (JsonElement reward : rewardData) {
+					Matcher matcher = ITEM_PATTERN.matcher(reward.getAsString());
+					
+					if (matcher.find()) {
+						String materialString = matcher.group(1).toUpperCase();
+						String itemDataString = matcher.group(2);
+						String itemCountString = matcher.group(3);
+						
+						@SuppressWarnings("deprecation")
+						Material material = NumberUtils.isNumber(materialString)
+								? Material.getMaterial(Integer.valueOf(materialString))
+								: Material.getMaterial(materialString);
+						byte itemData = NumberUtils.toByte(itemDataString);
+						int itemCount = NumberUtils.toInt(itemCountString, 1);
+						
+						if (material == null) continue;
+						
+						ItemStack item = new ItemStack(material, itemCount, itemData);
+						coupon.addRewards(item);
+					}
+				}
+			}
+			
+			return coupon;
+		}
+		
+	}
+	
 }
