@@ -1,16 +1,15 @@
 package me.yourmcgeek.coupons;
 
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import me.yourmcgeek.coupons.commands.CouponCmd;
-import me.yourmcgeek.coupons.utils.Coupon;
-import me.yourmcgeek.coupons.utils.CouponRegistry;
-import me.yourmcgeek.coupons.utils.general.BookUtils;
-import me.yourmcgeek.coupons.utils.general.ConfigAccessor;
+import me.yourmcgeek.coupons.coupon.Coupon;
+import me.yourmcgeek.coupons.coupon.CouponRegistry;
+import me.yourmcgeek.coupons.utils.BookUtils;
+import me.yourmcgeek.coupons.utils.ConfigAccessor;
 import me.yourmcgeek.coupons.utils.locale.Locale;
 
 /**
@@ -18,26 +17,20 @@ import me.yourmcgeek.coupons.utils.locale.Locale;
  */
 public class CouponCodes extends JavaPlugin {
 	
-
-	static{
+	static {
 		ConfigurationSerialization.registerClass(Coupon.class, "Coupon");
 	}
 	
 	private ItemStack infoBook;
-
+	
 	private Locale locale;
 	public ConfigAccessor couponFile;
 	
 	private CouponRegistry couponRegistry;
-	private boolean generateDefaultCoupon = false;
 	
-	FileConfiguration config = getConfig();
-
 	@Override
 	public void onEnable() {
-		this.getLogger().info("CouponCodes is ready to provide discounts!");
-		if (!this.getDataFolder().exists()) 
-			this.generateDefaultCoupon = true;
+		boolean generateDefaultCoupon = getDataFolder().exists();
 		this.saveDefaultConfig();
 		
 		// Generate localizations
@@ -57,9 +50,10 @@ public class CouponCodes extends JavaPlugin {
 		this.getCommand("coupon").setExecutor(new CouponCmd(this));
 		
 		// Load all saved coupons
-		for (String couponCode : couponFile.getConfig().getKeys(false)){
+		for (String couponCode : couponFile.getConfig().getKeys(false)) {
 			Coupon coupon = (Coupon) this.couponFile.getConfig().get(couponCode);
-			if (coupon == null){
+			
+			if (coupon == null) {
 				this.getLogger().warning("Could not load coupon with UUID " + couponCode + ". Ignoring");
 				continue;
 			}
@@ -68,40 +62,43 @@ public class CouponCodes extends JavaPlugin {
 		}
 		
 		// Generate default coupon
-		if (generateDefaultCoupon){
+		if (generateDefaultCoupon) {
 			this.couponRegistry.createCoupon("default", new ItemStack(Material.DIAMOND));
 			this.getLogger().info("Generated default coupon");
 			this.getLogger().info("Code: \"default\"");
 		}
 	}
-
+	
 	@Override
 	public void onDisable() {
-		this.getLogger().info("CouponCodes has run out of discounts!");
-		
 		for (Coupon coupon : this.couponRegistry.getCoupons())
-			// Remember that "Coupon" is ConfigurationSerializable, so it should be serialized properly :D
 			this.couponFile.getConfig().set(coupon.getCode(), coupon);
 		this.couponFile.saveConfig();
 		
 		this.couponRegistry.clearCouponData();
 	}
 	
-	/** Get an instance of the coupon registry
+	/**
+	 * Get an instance of the coupon registry
+	 * 
 	 * @return the coupon registry
 	 */
 	public CouponRegistry getCouponRegistry() {
 		return couponRegistry;
 	}
 	
-	/** Get the informational book ItemStack for CouponCodes
+	/**
+	 * Get the informational book ItemStack for CouponCodes
+	 * 
 	 * @return informational book
 	 */
 	public ItemStack getInfoBook() {
 		return infoBook;
 	}
 	
-	/** Get the currently active locale
+	/**
+	 * Get the currently active locale
+	 * 
 	 * @return active locale
 	 */
 	public Locale getLocale() {
