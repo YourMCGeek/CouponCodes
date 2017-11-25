@@ -1,4 +1,4 @@
-package me.yourmcgeek.coupons.utils.general;
+package me.yourmcgeek.coupons.utils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -13,9 +13,9 @@ import me.yourmcgeek.coupons.CouponCodes;
 
 public class BookUtils {
 	
-	public static final String TITLE = "Coupons Help Book", AUTHORS = "YourMCGeek & 2008Choco";
-	public static final String DISPLAY_NAME = "Coupons Help Book", COLOR_DISPLAY_NAME = DARK_AQUA.toString() + BOLD + "Coupons Help Book";
-	public static final List<String> LORE = Arrays.asList("A nice little guide to CouponCodes!");
+	private static final String TITLE = "Coupons Help Book", AUTHORS = "YourMCGeek & 2008Choco";
+	private static final String DISPLAY_NAME = "Coupons Help Book", COLOR_DISPLAY_NAME = DARK_AQUA.toString() + BOLD + "Coupons Help Book";
+	private static final List<String> LORE = Arrays.asList("A nice little guide to CouponCodes!");
 	
 	public static ItemStack generateBook(CouponCodes plugin) {
 		if (plugin.getInfoBook() != null) return plugin.getInfoBook();

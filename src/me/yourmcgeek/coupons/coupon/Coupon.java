@@ -1,7 +1,6 @@
-package me.yourmcgeek.coupons.utils;
+package me.yourmcgeek.coupons.coupon;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -12,6 +11,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+
 import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.Material;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
@@ -19,10 +21,9 @@ import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
-
-/** Represents a coupon registered to the server, its code and its rewards
+/**
+ * Represents a coupon registered to the server, its code and its rewards
+ * 
  * @author Parker Hawke - 2008Choco
  */
 @SerializableAs("Coupon")
@@ -35,92 +36,113 @@ public class Coupon implements ConfigurationSerializable {
 	
 	public Coupon(String code, ItemStack... rewards) {
 		this.code = code;
-		this.rewards.addAll(Arrays.asList(rewards));
+		this.addRewards(rewards);
 	}
 	
-	/** Get the code required to redeem this coupon
+	/**
+	 * Get the code required to redeem this coupon
+	 * 
 	 * @return the code
 	 */
 	public String getCode() {
 		return code;
 	}
 	
-	/** Get an immutable list of all rewards from this coupon
+	/**
+	 * Get an immutable list of all rewards from this coupon
+	 * 
 	 * @return a list of all rewards
 	 */
 	public Set<ItemStack> getRewards() {
 		return ImmutableSet.copyOf(rewards);
 	}
 	
-	/** Add rewards to this coupon
-	 * @param items - The items to add
+	/**
+	 * Add rewards to this coupon
+	 * 
+	 * @param items the items to add
 	 */
 	public void addRewards(ItemStack... items) {
-		this.rewards.addAll(Arrays.asList(items));
+		for (ItemStack item : items) {
+			this.rewards.add(item);
+		}
 	}
 	
-	/** Check whether a UUID has redeemed this coupon or not
-	 * @param uuid - The UUID to check
-	 * @return true if already redeemed
+	/**
+	 * Check whether a UUID has redeemed this coupon or not
+	 * 
+	 * @param uuid the UUID to check
+	 * @return true if already redeemed, false otherwise
 	 */
 	public boolean hasRedeemed(UUID uuid) {
 		return this.redeemed.contains(uuid);
 	}
 	
-	/** Check whether a Player has redeemed this coupon or not
-	 * @param player - The player to check
-	 * @return true if already redeemed
+	/**
+	 * Check whether a Player has redeemed this coupon or not
+	 * 
+	 * @param player the player to check
+	 * @return true if already redeemed, false otherwise
 	 */
 	public boolean hasRedeemed(Player player) {
 		return this.hasRedeemed(player.getUniqueId());
 	}
 	
-	/** Set that a UUID has redeemed this coupon
-	 * @param uuid - The UUID to flag as redeemed
+	/**
+	 * Set that a UUID has redeemed this coupon
+	 * 
+	 * @param uuid the UUID to flag as redeemed
 	 */
-	public void setRedeemed(UUID uuid) {
+	public void redeem(UUID uuid) {
 		this.redeemed.add(uuid);
 	}
 	
-	/** Set that a Player has redeemed this coupon
-	 * @param player - The player to flag as redeemed
+	/**
+	 * Set that a Player has redeemed this coupon
+	 * 
+	 * @param player the player to flag as redeemed
 	 */
-	public void setRedeemed(Player player) {
-		this.setRedeemed(player.getUniqueId());
+	public void redeem(Player player) {
+		this.redeem(player.getUniqueId());
 	}
 	
-	/** Set that a UUID has not redeemed this coupon, and allow 
-	 * the ability to redeem it again
-	 * @param uuid - The UUID to allow to redeem again
+	/**
+	 * Set that a UUID has not redeemed this coupon, and allow the ability to redeem it again
+	 * 
+	 * @param uuid the UUID to allow to redeem again
 	 */
 	public void unredeem(UUID uuid) {
 		this.redeemed.remove(uuid);
 	}
 	
-	/** Set that a Player has not redeemed this coupon, and allow 
-	 * the ability to redeem it again
-	 * @param player - The player to allow to redeem again
+	/**
+	 * Set that a Player has not redeemed this coupon, and allow the ability to redeem it again
+	 * 
+	 * @param player the player to allow to redeem again
 	 */
 	public void unredeem(Player player) {
 		this.unredeem(player.getUniqueId());
 	}
 	
-	/** Get am immutable list of all UUIDs that have redeemed this coupon
+	/**
+	 * Get am immutable list of all UUIDs that have redeemed this coupon
+	 * 
 	 * @return a list of all redeemers
 	 */
 	public List<UUID> getRedeemed() {
 		return ImmutableList.copyOf(this.redeemed);
 	}
 	
-	/** Clear all data stored in the coupon object
+	/**
+	 * Clear all data stored in the coupon object
 	 */
 	public void clearData() {
 		this.rewards.clear();
 		this.redeemed.clear();
 	}
-
-	@SuppressWarnings("deprecation")
+	
 	@Override
+	@SuppressWarnings("deprecation") // TODO Will have to fix this for 1.13
 	public Map<String, Object> serialize() {
 		Map<String, Object> data = new HashMap<>();
 		
@@ -131,7 +153,11 @@ public class Coupon implements ConfigurationSerializable {
 			serializedItems.add(item.getType() + ":" + item.getData().getData() + "|" + item.getAmount());
 		data.put("rewards", serializedItems);
 		
-		List<String> redeemedUUIDS = this.redeemed.stream().distinct().map(UUID::toString).collect(Collectors.toList()); // Convert all UUIDs to Strings
+		 // Convert all UUIDs to Strings
+		List<String> redeemedUUIDS = this.redeemed.stream()
+				.distinct()
+				.map(UUID::toString)
+				.collect(Collectors.toList());
 		data.put("redeemed", redeemedUUIDS);
 		return data;
 	}
@@ -140,27 +166,26 @@ public class Coupon implements ConfigurationSerializable {
 	
 	@SuppressWarnings("unchecked")
 	public static Coupon deserialize(Map<String, Object> data) {
-		String code = "";
+		if (!data.containsKey("code")) return null;
+		
+		String code = (String) data.get("code");
 		List<UUID> redeemed = new ArrayList<>();
 		
-		if (data.containsKey("code")){
-			code = (String) data.get("code");
-		}
-		else return null;
-
 		Coupon coupon = new Coupon(code);
 		
-		if (data.containsKey("rewards")){
+		if (data.containsKey("rewards")) {
 			String rewardString = String.join(",", (List<String>) data.get("rewards"));
 			Matcher matcher = ITEM_PATTERN.matcher(rewardString);
 			
-			while (matcher.find()){
+			while (matcher.find()) {
 				String materialString = matcher.group(1).toUpperCase();
 				String itemDataString = matcher.group(2);
 				String itemCountString = matcher.group(3);
 				
 				@SuppressWarnings("deprecation")
-				Material material = NumberUtils.isNumber(materialString) ? Material.getMaterial(Integer.valueOf(materialString)) : Material.getMaterial(materialString);
+				Material material = NumberUtils.isNumber(materialString)
+						? Material.getMaterial(Integer.valueOf(materialString))
+						: Material.getMaterial(materialString);
 				byte itemData = NumberUtils.toByte(itemDataString);
 				int itemCount = NumberUtils.toInt(itemCountString, 1);
 				
@@ -171,7 +196,7 @@ public class Coupon implements ConfigurationSerializable {
 			}
 		}
 		
-		if (data.containsKey("redeemed")){
+		if (data.containsKey("redeemed")) {
 			List<String> redeemedStrings = (List<String>) data.get("redeemed");
 			for (String redeemedString : redeemedStrings)
 				redeemed.add(UUID.fromString(redeemedString));

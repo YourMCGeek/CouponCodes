@@ -1,21 +1,23 @@
-package me.yourmcgeek.coupons.utils.general;
+package me.yourmcgeek.coupons.utils;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.logging.Level;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
  
+// We will be abolishing the idea of ConfigAccessor soon anyways. Not to worry about
 public class ConfigAccessor {
  
     public final String fileName;
     public final JavaPlugin plugin;
     
-    public File configFile;
-    public FileConfiguration fileConfiguration;
+    private final File configFile;
+    private FileConfiguration fileConfiguration;
  
 	public ConfigAccessor(JavaPlugin plugin, String fileName){
         this.plugin = plugin;
@@ -30,13 +32,12 @@ public class ConfigAccessor {
     }
  
     public void reloadConfig(){        
-        fileConfiguration = YamlConfiguration.loadConfiguration(configFile);
+        this.fileConfiguration = YamlConfiguration.loadConfiguration(configFile);
  
         // Look for defaults in the jar
         InputStream defConfigStream = plugin.getResource(fileName);
         if (defConfigStream != null){
-        	@SuppressWarnings("deprecation")
-            YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
+            YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(new InputStreamReader(defConfigStream));
             fileConfiguration.setDefaults(defConfig);
         }
     }
