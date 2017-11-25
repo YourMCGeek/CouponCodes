@@ -1,0 +1,34 @@
+# General command messages
+
+command.noperms = "&cYou have insufficient privileges to perform &e%command%"
+coupon.code.doesntexist = "&4ERROR: &cA coupon with the code &e%code% &cdoes not exist"
+
+
+# /coupon create
+
+coupon.create.exists = "&cA coupon with the code &e%code% &c already exists"
+coupon.create.invalid.format = "&cInvalid material format provided. Expected: &4<material[:data][;amount]>"
+coupon.create.invalid.material = "&cUnknown material value, '%material%'. Ignoring"
+coupon.create.invalid.material.air = "&cYou cannot create a material with the value of air. Ignoring"
+coupon.create.success = "&aCoupon successfully created! Coupon Code: &e%code%"
+coupon.create.missing.format = "&cPlease provide a valid material format. Expected: &4<material[:data][;amount]>"
+coupon.create.missing.code = "&cPlease specify a code for this coupon"
+
+
+# /coupon delete
+
+coupon.delete.success = "&aCoupon code &e%code% &asuccessfully deleted"
+coupon.delete.missing.code = "&cPlease specify a coupon code to delete"
+
+
+# /coupon redeem
+
+coupon.redeem.playersonly = "&cOnly players are permitted to redeem codes, as items will be received"
+coupon.redeem.alreadydone = "&4You have already redeemed this coupon code"
+coupon.redeem.success = "&aYou have claimed the coupon code &e%code%"
+coupon.redeem.missing.code = "&cPlease specify a coupon code to redeem"
+
+
+# /coupon reload
+
+command.reload = "&cConfiguration files successfully reloaded"
