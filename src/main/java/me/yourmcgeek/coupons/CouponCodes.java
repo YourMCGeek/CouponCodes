@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -29,6 +30,7 @@ import me.yourmcgeek.coupons.utils.locale.Locale;
  */
 public class CouponCodes extends JavaPlugin {
 
+	public static final Pattern ITEM_PATTERN = Pattern.compile("(\\w+)(?:(?:\\:{1})(\\d+)){0,1}(?:(?:\\;{1})(\\d+)){0,1}");
 	public static final Gson GSON = new GsonBuilder()
 			.registerTypeAdapter(Coupon.class, new Coupon.CouponSerializer())
 			.registerTypeAdapter(Coupon.class, new Coupon.CouponDeserializer())

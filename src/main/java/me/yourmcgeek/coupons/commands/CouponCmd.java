@@ -2,7 +2,6 @@ package me.yourmcgeek.coupons.commands;
 
 import java.util.List;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang.math.NumberUtils;
@@ -24,8 +23,6 @@ import me.yourmcgeek.coupons.utils.locale.Locale;
  * Created by YourMCGeek on 11/26/2016.
  */
 public class CouponCmd implements CommandExecutor {
-	
-	private static final Pattern ITEM_PATTERN = Pattern.compile("(\\w+)(?:(?:\\:{1})(\\d+)){0,1}(?:(?:\\;{1})(\\d+)){0,1}");
 	
 	private final CouponCodes plugin;
 	private final CouponRegistry couponRegistry;
@@ -75,7 +72,7 @@ public class CouponCmd implements CommandExecutor {
 				return true;
 			}
 			
-			Matcher matcher = ITEM_PATTERN.matcher(args[2]);
+			Matcher matcher = CouponCodes.ITEM_PATTERN.matcher(args[2]);
 			if (!matcher.find()) {
 				sender.sendMessage(ChatColor.RED + "Invalid material format provided. Expected: " + ChatColor.DARK_RED + "<material[:data][|amount]>");
 				return true;

@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -24,6 +23,8 @@ import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+
+import me.yourmcgeek.coupons.CouponCodes;
 
 /**
  * Represents a coupon registered to the server, its code and its rewards
@@ -195,8 +196,6 @@ public class Coupon {
 	}
 	
 	public static final class CouponDeserializer implements JsonDeserializer<Coupon> {
-
-		private static final Pattern ITEM_PATTERN = Pattern.compile("(\\w+)(?:(?:\\:{1})(\\d+)){0,1}(?:(?:\\;{1})(\\d+)){0,1}");
 		
 		@Override
 		public Coupon deserialize(JsonElement data, Type type, JsonDeserializationContext context) throws JsonParseException {
@@ -220,7 +219,7 @@ public class Coupon {
 			if (root.has("rewards")) {
 				JsonArray rewardData = root.getAsJsonArray("rewards");
 				for (JsonElement reward : rewardData) {
-					Matcher matcher = ITEM_PATTERN.matcher(reward.getAsString());
+					Matcher matcher = CouponCodes.ITEM_PATTERN.matcher(reward.getAsString());
 					
 					if (matcher.find()) {
 						String materialString = matcher.group(1).toUpperCase();
