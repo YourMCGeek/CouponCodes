@@ -1,11 +1,11 @@
 package me.yourmcgeek.coupons.coupon;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.google.common.collect.ImmutableList;
 
 import org.bukkit.inventory.ItemStack;
-
-import com.google.common.collect.ImmutableSet;
 
 /**
  * A registry to store all data regarding coupons and their current status on the server. All
@@ -15,7 +15,7 @@ import com.google.common.collect.ImmutableSet;
  */
 public class CouponRegistry {
 	
-	private final Set<Coupon> coupons = new HashSet<>();
+	private final List<Coupon> coupons = new ArrayList<>();
 	
 	/**
 	 * Register a coupon to the registry
@@ -87,8 +87,8 @@ public class CouponRegistry {
 	 * 
 	 * @return a set of all coupons
 	 */
-	public Set<Coupon> getCoupons() {
-		return ImmutableSet.copyOf(coupons);
+	public List<Coupon> getCoupons() {
+		return ImmutableList.copyOf(coupons);
 	}
 	
 	/**
