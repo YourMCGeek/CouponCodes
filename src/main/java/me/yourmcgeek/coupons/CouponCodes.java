@@ -43,9 +43,15 @@ public class CouponCodes extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-		boolean generateDefaultCoupon = getDataFolder().exists();
+		boolean generateDefaultCoupon = !COUPON_FILE.exists();
 		this.saveDefaultConfig();
-
+		
+		try {
+			COUPON_FILE.createNewFile();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 		// Generate localizations
 		Locale.init(this);
 		Locale.saveDefaultLocale("en_US");
