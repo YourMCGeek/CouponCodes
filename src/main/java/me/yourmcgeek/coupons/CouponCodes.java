@@ -6,6 +6,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -26,17 +28,15 @@ import me.yourmcgeek.coupons.utils.locale.Locale;
  * Created by YourMCGeek and 2008Choco on 11/26/2016.
  */
 public class CouponCodes extends JavaPlugin {
-	
+
 	public static final Gson GSON = new GsonBuilder()
 			.registerTypeAdapter(Coupon.class, new Coupon.CouponSerializer())
 			.registerTypeAdapter(Coupon.class, new Coupon.CouponDeserializer())
 			.setPrettyPrinting().create();
-
-	private ItemStack infoBook;
+	private static final File COUPON_FILE = new File("coupons.json");
 
 	private Locale locale;
-	private File couponFile;
-
+	private ItemStack infoBook;
 	private CouponRegistry couponRegistry;
 
 	@Override
@@ -51,8 +51,6 @@ public class CouponCodes extends JavaPlugin {
 		locale = Locale.getLocale(this.getConfig().getString("Locale", "en_US"));
 
 		// Field initialization
-		this.couponFile = new File("coupons.json");
-
 		this.couponRegistry = new CouponRegistry();
 		this.infoBook = BookUtils.generateBook(this);
 
@@ -60,21 +58,7 @@ public class CouponCodes extends JavaPlugin {
 		this.getCommand("coupon").setExecutor(new CouponCmd(this));
 
 		// Load all saved coupons
-		try (BufferedReader reader = new BufferedReader(new FileReader(couponFile))) {
-			for (JsonElement couponData : GSON.fromJson(reader, JsonArray.class)) {
-				Coupon coupon = GSON.fromJson(couponData, Coupon.class);
-				
-				if (coupon == null) {
-					this.getLogger().warning("Could not load coupon with data \"" + couponData + "\". Ignoring");
-					continue;
-				}
-
-				this.couponRegistry.registerCoupon(coupon);
-			}
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-		}
+		this.loadCouponsFromFile().forEach(couponRegistry::registerCoupon);
 
 		// Generate default coupon
 		if (generateDefaultCoupon) {
@@ -86,18 +70,8 @@ public class CouponCodes extends JavaPlugin {
 
 	@Override
 	public void onDisable() {
-		if (couponFile.exists() && couponRegistry.getCoupons().size() > 0) {
-			// Write coupons to file in the form of a JsonArray
-			try (BufferedWriter writer = new BufferedWriter(new FileWriter(couponFile))) {
-				JsonArray coupons = this.couponRegistry.getCoupons().stream()
-						.map(GSON::toJsonTree)
-						.collect(JsonArray::new, JsonArray::add, JsonArray::add);
-				writer.write(GSON.toJson(coupons));
-			}
-			catch (IOException e) {
-				e.printStackTrace();
-			}
-
+		if (COUPON_FILE.exists() && couponRegistry.getCoupons().size() > 0) {
+			this.saveCouponsToFile();
 			this.couponRegistry.clearCouponData();
 		}
 	}
@@ -128,4 +102,37 @@ public class CouponCodes extends JavaPlugin {
 	public Locale getLocale() {
 		return locale;
 	}
+	
+	private void saveCouponsToFile() {
+		try (BufferedWriter writer = new BufferedWriter(new FileWriter(COUPON_FILE))) {
+			JsonArray coupons = this.couponRegistry.getCoupons().stream()
+					.map(GSON::toJsonTree)
+					.collect(JsonArray::new, JsonArray::add, JsonArray::add);
+			writer.write(GSON.toJson(coupons));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private List<Coupon> loadCouponsFromFile() {
+		List<Coupon> coupons = new ArrayList<>();
+		
+		try (BufferedReader reader = new BufferedReader(new FileReader(COUPON_FILE))) {
+			for (JsonElement couponData : GSON.fromJson(reader, JsonArray.class)) {
+				Coupon coupon = GSON.fromJson(couponData, Coupon.class);
+				
+				if (coupon == null) {
+					this.getLogger().warning("Could not load coupon with data \"" + couponData + "\". Ignoring");
+					continue;
+				}
+				
+				coupons.add(coupon);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return coupons;
+	}
+	
 }
