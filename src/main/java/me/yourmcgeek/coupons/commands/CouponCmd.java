@@ -165,11 +165,44 @@ public class CouponCmd implements CommandExecutor {
 				return true;
 			}
 			
+			if (!coupon.isRedeemable()) {
+				sender.sendMessage(ChatColor.DARK_RED + "This code is no longer redeemable. If you believe this is a mistake, please contact"
+						+ "an administrator to enable the redeemability of this coupon");
+				return true;
+			}
+			
 			Inventory inventory = player.getInventory();
 			coupon.getRewards().forEach(i -> inventory.addItem(i));
 			coupon.redeem(player);
 			
 			sender.sendMessage(ChatColor.GREEN + "You have claimed the coupon code " + ChatColor.YELLOW + code);
+		}
+		
+		else if (args[0].equalsIgnoreCase("redeemable")) {
+			if (!sender.hasPermission("coupon.redeemable")) {
+				sender.sendMessage(ChatColor.RED + "You do not have permission to use " + ChatColor.YELLOW + "/coupons redeemable " + ChatColor.RED + "Please try again later");
+				return true;
+			}
+			
+			if (args.length < 2) {
+				sender.sendMessage(ChatColor.RED + "Please specify a coupon code to redeem");
+				return true;
+			}
+			
+			String code = args[1];
+			if (!this.couponRegistry.couponExists(code)) {
+				sender.sendMessage(ChatColor.DARK_RED + "ERROR: The following code, " + ChatColor.YELLOW + code + ChatColor.DARK_RED + ", does not exsist.");
+				sender.sendMessage(ChatColor.DARK_RED + "Please try again with a valid coupon code.");
+				return true;
+			}
+			
+			Coupon coupon = this.couponRegistry.getCoupon(code);
+			boolean newRedeemableState = !coupon.isRedeemable();
+			coupon.setRedeemable(newRedeemableState);
+			
+			sender.sendMessage(ChatColor.GRAY + "The coupon code " + code + " is " + (newRedeemableState
+					? ChatColor.GREEN + "now redeemable"
+					: ChatColor.RED + "no longer redeemable"));
 		}
 		
 		else if (args[0].equalsIgnoreCase("help")) {

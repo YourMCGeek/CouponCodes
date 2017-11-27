@@ -32,8 +32,9 @@ import org.bukkit.inventory.ItemStack;
  */
 public class Coupon {
 	
-	private final List<UUID> redeemed = new ArrayList<>();
+	private boolean redeemable = true;
 	
+	private final List<UUID> redeemed = new ArrayList<>();
 	private final Set<ItemStack> rewards = new HashSet<>();
 	private final String code;
 	
@@ -137,6 +138,24 @@ public class Coupon {
 	}
 	
 	/**
+	 * Set whether this coupon is capable of being redeemed by a player or not
+	 * 
+	 * @param redeemable the new redeemable state
+	 */
+	public void setRedeemable(boolean redeemable) {
+		this.redeemable = redeemable;
+	}
+	
+	/**
+	 * Check whether this coupon is redeemable by a player
+	 * 
+	 * @return true if redeemable, false otherwise
+	 */
+	public boolean isRedeemable() {
+		return redeemable;
+	}
+	
+	/**
 	 * Clear all data stored in the coupon object
 	 */
 	public void clearData() {
@@ -152,6 +171,7 @@ public class Coupon {
 			JsonObject root = new JsonObject();
 			
 			root.addProperty("code", coupon.code);
+			root.addProperty("redeemable", coupon.redeemable);
 			
 			if (!coupon.redeemed.isEmpty()) {
 				JsonArray redeemedData = new JsonArray();
@@ -186,6 +206,7 @@ public class Coupon {
 			String code = root.get("code").getAsString();
 			
 			Coupon coupon = new Coupon(code);
+			coupon.redeemable = root.get("redeemable").getAsBoolean();
 			
 			// Redeemed UUIDs
 			if (root.has("redeemed")) {
