@@ -168,7 +168,7 @@ public class CouponCmd implements CommandExecutor {
 			}
 			
 			Inventory inventory = player.getInventory();
-			coupon.getRewards().forEach(i -> inventory.addItem(i));
+			coupon.getRewards().forEach(inventory::addItem);
 			coupon.redeem(player);
 			
 			sender.sendMessage(locale.getMessage("command.coupon.redeem.success").replace("%code%", code));
