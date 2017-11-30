@@ -1,34 +1,58 @@
+# Messages de activation / érreures
+
+enable.coupongeneration.default = "Un coupon défaut était généré avec le code \"%code%\""
+enable.coupongeneration.failed = "Ne pouvait pas charger le coupon avec le data %data%. On l'ignore"
+
+
 # Messages de commandes générale
 
-command.noperms = "&cTu n'a pas de permissions pour executé &e%command%"
-coupon.code.doesntexist = "&4ERREUR: &cUn coupon avec le code &e%code% &cn'existe pas"
+command.general.invalidcoupon = "&4ERREUR: &cUn coupon avec le code &e%code% &cn'existe pas"
+command.general.noperms = "&cTu n'a pas de permissions pour executé le commande &e%command%"
+
+# /coupon book
+
+command.coupon.book.playersonly = "&cSeulement les joueurs peut recevoire un livre parce-que des objets sera donné"
+command.coupons.book.success = "&aVous avez reçu un livre informational"
 
 
 # /coupon create
 
-coupon.create.exists = "&cUn coupon avec le code &e%code% &cexiste déjà"
-coupon.create.invalid.format = "&cFormat de matériel invalid. Expecté: &4<matériel[:data][;quantité]>"
-coupon.create.invalid.material = "&cMatériel inconnu, '%material%'. Ignoré"
-coupon.create.invalid.material.air = "&cTu ne peut pas créer un objet avec un matériel d'aire. Ignoré"
-coupon.create.success = "&aCoupon créer! Code de Promo: &e%code%"
-coupon.create.missing.format = "&cS'il-te-plait, donné une format de matériel propre. Expecté: &4<matériel[:data][;quantité]>"
-coupon.create.missing.code = "&cPlease specify a code for this coupon"
+command.coupon.create.alreadyexists = "&cUn coupon avec le code &e%code% &cexiste déjà"
+command.coupon.create.invalid.format = "&cFormat de matériel invalid. Nous expectons: &4<matériel[:data][;quantité]>"
+command.coupon.create.invalid.material = "&cMatériel inconnu, '%material%'. Ignoré"
+command.coupon.create.invalid.material.air = "&cTu ne peut pas créer un objet avec un matériel d'aire. Ignoré"
+command.coupon.create.missing.code = "&cS'il-te-plait spécifier un code pour cette coupon"
+command.coupon.create.missing.format = "&cS'il-te-plait, donné une format de matériel propre. Nous expectons: &4<matériel[:data][;quantité]>"
+command.coupon.create.success = "&aCoupon créer! Code de Promo: &e%code%"
 
 
 # /coupon delete
 
-coupon.delete.success = "&aCode de promo &e%code% &aéffacer!"
-coupon.delete.missing.code = "&cS'il-te-plait, spécifier un code de promo pour éffacer"
+command.coupon.delete.missing.code = "&cS'il-te-plait, spécifier un code de promo pour supprimé"
+command.coupon.delete.success = "&aLe code de promo &e%code% &aest supprimé!"
+
+
+# /coupon /list
+
+command.coupon.list.listing = "&2Les coupons qui éxistent: \n&a%codes%"
 
 
 # /coupon redeem
 
-coupon.redeem.playersonly = "&cSeulement les joueurs peuvent racheter les codes de promos, parce-que des objets sera donné"
-coupon.redeem.alreadydone = "&4Vous avez déjà racheter cette code de promo"
-coupon.redeem.success = "&aVous avec racheter le code to promo: &e%code%"
-coupon.redeem.missing.code = "&cS'il-te-plait, spécifier un code de promo pour racheter"
+command.coupon.redeem.alreadyredeemed = "&4Vous avez déjà racheter cette code de promo"
+command.coupon.redeem.missing.code = "&cS'il-te-plait, spécifier un code de promo pour racheter"
+command.coupon.redeem.notredeemable = "&cCette code n'est plus rachetable. Si tu croit que ceci est un érreur, contacté un administrateur pour l'activé"
+command.coupon.redeem.playersonly = "&cSeulement les joueurs peuvent racheter les codes de promos parce-que des objets sera donné"
+command.coupon.redeem.success = "&aVous avec racheter le code to promo: &e%code%"
+
+
+# /coupon redeemtoggle
+
+command.coupon.redeemtoggle.missing.code = "&cSil-te-plait, spécifier le code du coupon que tu veut modifier"
+command.coupon.redeemtoggle.success.disable = "&7Le code de promo %code% &cn'est plus rachetable"
+command.coupon.redeemtoggle.success.enable = "&7Le code de promo %code% &aest maintenant rachetable"
 
 
 # /coupon reload
 
-command.reload = "&cConfiguration recharger avec succès"
+command.coupon.reload.success = "&cConfiguration recharger avec succès"

@@ -71,8 +71,7 @@ public class CouponCodes extends JavaPlugin {
 		// Generate default coupon
 		if (generateDefaultCoupon) {
 			this.couponRegistry.createCoupon("default", new ItemStack(Material.DIAMOND));
-			this.getLogger().info("Generated default coupon");
-			this.getLogger().info("Code: \"default\"");
+			this.getLogger().info(locale.getMessage("enable.coupongeneration.default").replace("%code%", "default"));
 		}
 	}
 
@@ -130,7 +129,7 @@ public class CouponCodes extends JavaPlugin {
 				Coupon coupon = GSON.fromJson(couponData, Coupon.class);
 				
 				if (coupon == null) {
-					this.getLogger().warning("Could not load coupon with data \"" + couponData + "\". Ignoring");
+					this.getLogger().warning(locale.getMessage("enable.coupongeneration.failed").replace("%data%", couponData.toString()));
 					continue;
 				}
 				

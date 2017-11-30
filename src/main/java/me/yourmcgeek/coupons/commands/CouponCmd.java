@@ -48,14 +48,16 @@ public class CouponCmd implements CommandExecutor {
 			return true;
 		}
 		
+		Locale locale = plugin.getLocale();
+		
 		if (args[0].equalsIgnoreCase("create")) {
 			if (!sender.hasPermission("coupons.create")) {
-				sender.sendMessage(ChatColor.RED + "You do not have permission for the usage to use " + ChatColor.YELLOW + "/coupons create " + ChatColor.RED + "Please try again later.");
+				sender.sendMessage(locale.getMessage("command.general.noperms").replace("%command%", "/coupons create"));
 				return true;
 			}
 			
 			if (args.length < 2) {
-				sender.sendMessage(ChatColor.RED + "Please specify a code for this coupon");
+				sender.sendMessage(locale.getMessage("command.coupon.create.missing.code"));
 				return true;
 			}
 			
@@ -63,18 +65,18 @@ public class CouponCmd implements CommandExecutor {
 			
 			// Check if the coupon exists before creating a new one
 			if (this.couponRegistry.couponExists(code)) {
-				sender.sendMessage(ChatColor.RED + "A coupon with the code " + ChatColor.YELLOW + code + ChatColor.RED + " already exists");
+				sender.sendMessage(locale.getMessage("command.coupon.create.alreadyexists").replace("%code%", code));
 				return true;
 			}
 			
 			if (args.length < 3) {
-				sender.sendMessage(ChatColor.RED + "Please provide a valid material format. " + ChatColor.DARK_RED + "<material[:data][|amount]>");
+				sender.sendMessage(locale.getMessage("command.coupon.create.missing.format"));
 				return true;
 			}
 			
 			Matcher matcher = CouponCodes.ITEM_PATTERN.matcher(args[2]);
 			if (!matcher.find()) {
-				sender.sendMessage(ChatColor.RED + "Invalid material format provided. Expected: " + ChatColor.DARK_RED + "<material[:data][|amount]>");
+				sender.sendMessage(locale.getMessage("command.coupon.create.invalid.format"));
 				return true;
 			}
 			
@@ -92,12 +94,12 @@ public class CouponCmd implements CommandExecutor {
 				int itemCount = NumberUtils.toInt(itemCountString, 1);
 				
 				if (material == null) {
-					sender.sendMessage(ChatColor.RED + "Unknown material value, \"" + materialString + "\". Ignoring");
+					sender.sendMessage(locale.getMessage("command.coupon.create.invalid.material").replace("%material%", materialString));
 					continue;
 				}
 				
 				if (material == Material.AIR) {
-					sender.sendMessage(ChatColor.RED + "You cannot create a material with the value of \"" + materialString + "\". Ignorning");
+					sender.sendMessage(locale.getMessage("command.coupon.create.invalid.material.air"));
 					continue;
 				}
 				
@@ -106,65 +108,62 @@ public class CouponCmd implements CommandExecutor {
 			}
 			
 			this.couponRegistry.registerCoupon(coupon);
-			sender.sendMessage(ChatColor.GREEN + "Coupon successfully created! Coupon Code: " + ChatColor.YELLOW + code);
+			sender.sendMessage(locale.getMessage("command.coupon.create.success").replace("%code%", code));
 		}
 		
 		else if (args[0].equalsIgnoreCase("delete")) {
 			if (!sender.hasPermission("coupons.delete")) {
-				sender.sendMessage(ChatColor.RED + "You do not have permission for the usage to use " + ChatColor.YELLOW + "/coupons delete " + ChatColor.RED + "Please try again later.");
+				sender.sendMessage(locale.getMessage("command.general.noperms").replace("%command%", "/coupons delete"));
 				return true;
 			}
 			
 			if (args.length < 2) {
-				sender.sendMessage(ChatColor.RED + "Please specify a coupon code to delete");
+				sender.sendMessage(locale.getMessage("command.coupon.delete.missing.code"));
 				return true;
 			}
 			
 			String code = args[1];
 			if (!this.couponRegistry.couponExists(code)) {
-				sender.sendMessage(ChatColor.DARK_RED + "ERROR: The following code, " + ChatColor.YELLOW + code + ChatColor.DARK_RED + ", does not exsist.");
-				sender.sendMessage(ChatColor.DARK_RED + "Please try again with a valid coupon code.");
+				sender.sendMessage(locale.getMessage("command.general.invalidcoupon").replace("%code%", code));
 				return true;
 			}
 			
 			couponRegistry.deleteCoupon(code);
-			sender.sendMessage(ChatColor.GREEN + "Coupon code " + ChatColor.YELLOW + code + ChatColor.GREEN + " successfully deleted");
+			sender.sendMessage(locale.getMessage("command.coupon.delete.success").replace("%code%", code));
 		}
 		
 		else if (args[0].equalsIgnoreCase("redeem")) {
 			if (!(sender instanceof Player)) {
-				sender.sendMessage("Only players can redeem codes, as items will be received");
+				sender.sendMessage(locale.getMessage("command.coupon.redeem.playersonly"));
 				return true;
 			}
 			
 			if (!sender.hasPermission("coupon.redeem")) {
-				sender.sendMessage(ChatColor.RED + "You do not have permission for the usage to use " + ChatColor.YELLOW + "/coupons redeem " + ChatColor.RED + "Please try again later.");
+				sender.sendMessage(locale.getMessage("command.general.noperms").replace("%command%", "/coupons redeem"));
 				return true;
 			}
 			
 			Player player = (Player) sender;
 			
 			if (args.length < 2) {
-				sender.sendMessage(ChatColor.RED + "Please specify a coupon code to redeem");
+				sender.sendMessage(locale.getMessage("command.coupon.redeem.missing.code"));
 				return true;
 			}
 			
 			String code = args[1];
 			if (!this.couponRegistry.couponExists(code)) {
-				sender.sendMessage(ChatColor.DARK_RED + "ERROR: The following code, " + ChatColor.YELLOW + code + ChatColor.DARK_RED + ", does not exsist.");
-				sender.sendMessage(ChatColor.DARK_RED + "Please try again with a valid coupon code.");
+				sender.sendMessage(locale.getMessage("command.general.invalidcoupon").replace("%code%", code));
 				return true;
 			}
 			
 			Coupon coupon = this.couponRegistry.getCoupon(code);
 			if (coupon.hasRedeemed(player)) {
-				sender.sendMessage(ChatColor.DARK_RED + "You have already redeemed this reward! You cannot redeem it again!");
+				sender.sendMessage(locale.getMessage("command.coupon.redeem.alreadyredeemed"));
 				return true;
 			}
 			
 			if (!coupon.isRedeemable()) {
-				sender.sendMessage(ChatColor.DARK_RED + "This code is no longer redeemable. If you believe this is a mistake, please contact"
-						+ "an administrator to enable the redeemability of this coupon");
+				sender.sendMessage(locale.getMessage("command.coupon.redeem.notredeemable"));
 				return true;
 			}
 			
@@ -172,24 +171,23 @@ public class CouponCmd implements CommandExecutor {
 			coupon.getRewards().forEach(i -> inventory.addItem(i));
 			coupon.redeem(player);
 			
-			sender.sendMessage(ChatColor.GREEN + "You have claimed the coupon code " + ChatColor.YELLOW + code);
+			sender.sendMessage(locale.getMessage("command.coupon.redeem.success").replace("%code%", code));
 		}
 		
-		else if (args[0].equalsIgnoreCase("redeemable")) {
-			if (!sender.hasPermission("coupon.redeemable")) {
-				sender.sendMessage(ChatColor.RED + "You do not have permission to use " + ChatColor.YELLOW + "/coupons redeemable " + ChatColor.RED + "Please try again later");
+		else if (args[0].equalsIgnoreCase("redeemtoggle")) {
+			if (!sender.hasPermission("coupon.redeemtoggle")) {
+				sender.sendMessage(locale.getMessage("command.general.noperms").replace("%command%", "/coupons redeemtoggle"));
 				return true;
 			}
 			
 			if (args.length < 2) {
-				sender.sendMessage(ChatColor.RED + "Please specify a coupon code to redeem");
+				sender.sendMessage(locale.getMessage("command.coupon.redeemtoggle.missing.code"));
 				return true;
 			}
 			
 			String code = args[1];
 			if (!this.couponRegistry.couponExists(code)) {
-				sender.sendMessage(ChatColor.DARK_RED + "ERROR: The following code, " + ChatColor.YELLOW + code + ChatColor.DARK_RED + ", does not exsist.");
-				sender.sendMessage(ChatColor.DARK_RED + "Please try again with a valid coupon code.");
+				sender.sendMessage(locale.getMessage("command.general.invalidcoupon").replace("%code%", code));
 				return true;
 			}
 			
@@ -197,9 +195,10 @@ public class CouponCmd implements CommandExecutor {
 			boolean newRedeemableState = !coupon.isRedeemable();
 			coupon.setRedeemable(newRedeemableState);
 			
-			sender.sendMessage(ChatColor.GRAY + "The coupon code " + code + " is " + (newRedeemableState
-					? ChatColor.GREEN + "now redeemable"
-					: ChatColor.RED + "no longer redeemable"));
+			sender.sendMessage(locale.getMessage(newRedeemableState 
+					? "command.coupon.redeemtoggle.success.enable" 
+					: "command.coupon.redeemtoggle.success.disable"
+				).replace("%code%", code));
 		}
 		
 		else if (args[0].equalsIgnoreCase("help")) {
@@ -215,41 +214,47 @@ public class CouponCmd implements CommandExecutor {
 		
 		else if (args[0].equalsIgnoreCase("list")) {
 			if (!sender.hasPermission("coupons.list")) {
-				sender.sendMessage(ChatColor.RED + "You do not have permission for the usage to use " + ChatColor.YELLOW + "/coupons list " + ChatColor.RED + "Please try again later.");
+				sender.sendMessage(locale.getMessage("command.general.noperms").replace("%command%", "/coupons list"));
 				return true;
 			}
 			
 			List<String> codes = couponRegistry.getCoupons().stream()
 					.map(Coupon::getCode)
 					.collect(Collectors.toList());
-			sender.sendMessage(ChatColor.DARK_GREEN + "Current coupons are:");
-			sender.sendMessage(ChatColor.GREEN + String.join(", ", codes));
+			sender.sendMessage(locale.getMessage("command.coupon.list.listing").replace("%codes%", String.join(", ", codes)));
 		}
 		
 		else if (args[0].equalsIgnoreCase("book")) {
 			if (!(sender instanceof Player)) {
-				sender.sendMessage("Only players can run this command, as items will be received");
+				sender.sendMessage(locale.getMessage("command.coupons.book.playersonly"));
 				return true;
 			}
 			
 			Player player = (Player) sender;
 			
 			if (!player.hasPermission("coupons.book")) {
-				player.sendMessage(ChatColor.RED + "You do not have permission for the usage to use " + ChatColor.YELLOW + "/coupons book " + ChatColor.RED + "Please try again later.");
+				sender.sendMessage(locale.getMessage("command.general.noperms").replace("%command%", "/coupons book"));
 				return true;
 			}
 			
 			player.getInventory().addItem(this.plugin.getInfoBook());
+			sender.sendMessage(locale.getMessage("command.coupons.book.success"));
 		}
 		
 		else if (args[0].equalsIgnoreCase("reload")) {
-			for (Locale locale : Locale.getLocales()) {
-				if (!locale.reloadMessages()) {
+			if (!sender.hasPermission("coupons.reload")) {
+				sender.sendMessage(locale.getMessage("command.general.noperms").replace("%command%", "/coupons reload"));
+				return true;
+			}
+			
+			for (Locale localeTemp : Locale.getLocales()) {
+				if (!localeTemp.reloadMessages()) {
+					// Obviously, if you can't reload the locale, there's no point in making a customizable message
 					sender.sendMessage(ChatColor.RED + "Could not reload message for locale " + locale.getName());
 				}
 			}
 			
-			sender.sendMessage(ChatColor.GREEN + "Configuration file successfully reloaded");
+			sender.sendMessage(locale.getMessage("command.coupon.reload.success"));
 		}
 		
 		else {
@@ -262,7 +267,7 @@ public class CouponCmd implements CommandExecutor {
 	private void displayHelp(CommandSender sender, String unknownArgument) {
 		if (unknownArgument != null)
 			sender.sendMessage(ChatColor.RED + "Unknown command argument: " + ChatColor.DARK_RED + unknownArgument);
-		sender.sendMessage(ChatColor.RED + "/coupon <create|delete|redeem|help|list|book>");
+		sender.sendMessage(ChatColor.RED + "/coupon <create|delete|redeem|redeemtoggle|help|list|book|reload>");
 	}
 	
 	private void displayHelp(CommandSender sender) {
