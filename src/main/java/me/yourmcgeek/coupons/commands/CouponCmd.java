@@ -5,6 +5,7 @@ import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang.math.NumberUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -15,6 +16,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import me.yourmcgeek.coupons.CouponCodes;
+import me.yourmcgeek.coupons.api.PlayerRedeemCouponEvent;
 import me.yourmcgeek.coupons.coupon.Coupon;
 import me.yourmcgeek.coupons.coupon.CouponRegistry;
 import me.yourmcgeek.coupons.utils.locale.Locale;
@@ -167,6 +169,12 @@ public class CouponCmd implements CommandExecutor {
 				return true;
 			}
 			
+			// Call PlayerRedeemCouponEvent
+			PlayerRedeemCouponEvent prce = new PlayerRedeemCouponEvent(player, coupon);
+			Bukkit.getPluginManager().callEvent(prce);
+			if (prce.isCancelled()) return true;
+			
+			// Add items to inventory
 			Inventory inventory = player.getInventory();
 			coupon.getRewards().forEach(inventory::addItem);
 			coupon.redeem(player);
