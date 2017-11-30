@@ -174,10 +174,11 @@ public class CouponCmd implements CommandExecutor {
 			Bukkit.getPluginManager().callEvent(prce);
 			if (prce.isCancelled()) return true;
 			
-			// Add items to inventory
+			// Add items to inventory & fire redemption action
 			Inventory inventory = player.getInventory();
 			coupon.getRewards().forEach(inventory::addItem);
 			coupon.redeem(player);
+			coupon.getRedeemAction().accept(player);
 			
 			sender.sendMessage(locale.getMessage("command.coupon.redeem.success").replace("%code%", code));
 		}

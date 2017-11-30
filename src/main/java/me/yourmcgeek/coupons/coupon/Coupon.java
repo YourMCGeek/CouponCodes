@@ -23,6 +23,7 @@ import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Consumer;
 
 import me.yourmcgeek.coupons.CouponCodes;
 
@@ -33,7 +34,10 @@ import me.yourmcgeek.coupons.CouponCodes;
  */
 public class Coupon {
 	
+	private static final Consumer<Player> EMPTY_CONSUMER = p -> {};
+	
 	private boolean redeemable = true;
+	private Consumer<Player> redeemAction = EMPTY_CONSUMER;
 	
 	private final Set<UUID> redeemed = new HashSet<>();
 	private final List<ItemStack> rewards = new ArrayList<>();
@@ -154,6 +158,28 @@ public class Coupon {
 	 */
 	public boolean isRedeemable() {
 		return redeemable;
+	}
+	
+	/**
+	 * Set the action to be called when this coupon code is redeemed given the
+	 * Player that redeemed the code. Setting this to null will use the default,
+	 * empty consumer with no action
+	 * 
+	 * @param redeemAction the new player redemption consumer action
+	 */
+	public void setRedeemAction(Consumer<Player> redeemAction) {
+		this.redeemAction = (redeemAction != null) ? redeemAction : EMPTY_CONSUMER;
+	}
+	
+	/**
+	 * Get the action to be called when this coupon code is redeemed. null can
+	 * never be returned. If no action has been set, an empty Consumer will be
+	 * returned
+	 * 
+	 * @return the player redemption consumer action
+	 */
+	public Consumer<Player> getRedeemAction() {
+		return redeemAction;
 	}
 	
 	/**
