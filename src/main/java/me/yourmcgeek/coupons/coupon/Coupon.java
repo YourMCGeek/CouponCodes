@@ -35,8 +35,8 @@ public class Coupon {
 	
 	private boolean redeemable = true;
 	
-	private final List<UUID> redeemed = new ArrayList<>();
-	private final Set<ItemStack> rewards = new HashSet<>();
+	private final Set<UUID> redeemed = new HashSet<>();
+	private final List<ItemStack> rewards = new ArrayList<>();
 	private final String code;
 	
 	public Coupon(String code, ItemStack... rewards) {
@@ -58,8 +58,8 @@ public class Coupon {
 	 * 
 	 * @return a list of all rewards
 	 */
-	public Set<ItemStack> getRewards() {
-		return ImmutableSet.copyOf(rewards);
+	public List<ItemStack> getRewards() {
+		return ImmutableList.copyOf(rewards);
 	}
 	
 	/**
@@ -130,12 +130,12 @@ public class Coupon {
 	}
 	
 	/**
-	 * Get am immutable list of all UUIDs that have redeemed this coupon
+	 * Get am immutable set of all UUIDs that have redeemed this coupon
 	 * 
 	 * @return a list of all redeemers
 	 */
-	public List<UUID> getRedeemed() {
-		return ImmutableList.copyOf(this.redeemed);
+	public Set<UUID> getRedeemed() {
+		return ImmutableSet.copyOf(this.redeemed);
 	}
 	
 	/**
