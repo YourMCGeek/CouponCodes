@@ -283,7 +283,7 @@ public class CouponCmd implements CommandExecutor {
 
 					}
 
-					if (confirmCode();)
+					//if (confirmCode();)
 
 			}
 
