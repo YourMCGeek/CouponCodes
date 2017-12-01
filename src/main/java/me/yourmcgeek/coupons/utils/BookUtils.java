@@ -1,9 +1,9 @@
 package me.yourmcgeek.coupons.utils;
 
+import static org.bukkit.ChatColor.*;
+
 import java.util.Arrays;
 import java.util.List;
-
-import static org.bukkit.ChatColor.*;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -11,11 +11,13 @@ import org.bukkit.inventory.meta.BookMeta;
 
 import me.yourmcgeek.coupons.CouponCodes;
 
-public class BookUtils {
+public final class BookUtils {
 	
 	private static final String TITLE = "Coupons Help Book", AUTHORS = "YourMCGeek & 2008Choco";
 	private static final String DISPLAY_NAME = "Coupons Help Book", COLOR_DISPLAY_NAME = DARK_AQUA.toString() + BOLD + "Coupons Help Book";
 	private static final List<String> LORE = Arrays.asList("A nice little guide to CouponCodes!");
+	
+	private BookUtils() {}
 	
 	public static ItemStack generateBook(CouponCodes plugin) {
 		if (plugin.getInfoBook() != null) return plugin.getInfoBook();

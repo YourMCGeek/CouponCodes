@@ -43,6 +43,12 @@ public class Coupon {
 	private final List<ItemStack> rewards = new ArrayList<>();
 	private final String code;
 	
+	/**
+	 * Construct a new Coupon with a given code and ItemStack rewards
+	 * 
+	 * @param code the coupon's code
+	 * @param rewards the rewards for this coupon
+	 */
 	public Coupon(String code, ItemStack... rewards) {
 		this.code = code;
 		this.addRewards(rewards);
