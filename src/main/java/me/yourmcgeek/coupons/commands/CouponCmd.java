@@ -5,6 +5,7 @@ import me.yourmcgeek.coupons.coupon.Coupon;
 import me.yourmcgeek.coupons.coupon.CouponRegistry;
 import me.yourmcgeek.coupons.utils.locale.Locale;
 import org.apache.commons.lang.math.NumberUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -17,10 +18,18 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+<<<<<<< HEAD
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
+=======
+import me.yourmcgeek.coupons.CouponCodes;
+import me.yourmcgeek.coupons.api.PlayerRedeemCouponEvent;
+import me.yourmcgeek.coupons.coupon.Coupon;
+import me.yourmcgeek.coupons.coupon.CouponRegistry;
+import me.yourmcgeek.coupons.utils.locale.Locale;
+>>>>>>> db16f3de505bc35431332476e90c71b3a3625ccc
 
 /**
  * Created by YourMCGeek on 11/26/2016.
@@ -180,9 +189,16 @@ public class CouponCmd implements CommandExecutor {
 				return true;
 			}
 			
+			// Call PlayerRedeemCouponEvent
+			PlayerRedeemCouponEvent prce = new PlayerRedeemCouponEvent(player, coupon);
+			Bukkit.getPluginManager().callEvent(prce);
+			if (prce.isCancelled()) return true;
+			
+			// Add items to inventory & fire redemption action
 			Inventory inventory = player.getInventory();
-			coupon.getRewards().forEach(i -> inventory.addItem(i));
+			coupon.getRewards().forEach(inventory::addItem);
 			coupon.redeem(player);
+			coupon.getRedeemAction().accept(player);
 			
 			sender.sendMessage(locale.getMessage("command.coupon.redeem.success").replace("%code%", code));
 		}

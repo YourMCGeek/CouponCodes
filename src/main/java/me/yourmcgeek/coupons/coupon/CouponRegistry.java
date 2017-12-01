@@ -23,6 +23,7 @@ public class CouponRegistry {
 	 * @param coupon the coupon to register
 	 */
 	public void registerCoupon(Coupon coupon) {
+		if (coupons.contains(coupon)) return;
 		this.coupons.add(coupon);
 	}
 	
@@ -95,7 +96,7 @@ public class CouponRegistry {
 	 * Clear all locally stored data in the coupon registry
 	 */
 	public void clearCouponData() {
-		this.coupons.forEach(c -> c.clearData());
+		this.coupons.forEach(Coupon::clearData);
 		this.coupons.clear();
 	}
 }
