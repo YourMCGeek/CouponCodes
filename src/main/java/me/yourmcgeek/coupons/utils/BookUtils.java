@@ -31,29 +31,40 @@ public class BookUtils {
 		
 		// Page generation
 		bookMeta.addPage(
-			DARK_GREEN + "" + BOLD + UNDERLINE + "Welcome to Coupons!\n\n" + RESET + DARK_AQUA +
-			"To create a coupon, do " + DARK_GREEN + "\n/coupons create {code} <material>[:data][;amount]\n\n" 
-			+ DARK_AQUA + "An example would be   " + DARK_GREEN 
-			+ "/coupons create CBE dirt|64",
+			// Page 1
+			DARK_GREEN + BOLD.toString() + UNDERLINE + "Welcome to Coupons!"
+			+ "\n\n" + RESET + DARK_AQUA + "To create a coupon, use "
+			+ "\n" + DARK_GREEN + "/coupons create {code} <material>[:data][;amount]" 
+			+ "\n\n" + DARK_AQUA + "For example: " + DARK_GREEN + "/coupons create example_code dirt;64",
 			
-			DARK_BLUE + "To view the current list of coupons, you can try running the command\n\n" + DARK_AQUA + "/coupons list"
-			 + DARK_BLUE + "\n\nType it in chat to see all your coupons!" ,
+			// Page 2
+			DARK_BLUE + "To view the list of all coupons, you can run the following command:" 
+			+ "\n" + DARK_AQUA + "/coupons list"
+			+ "\n\n" + DARK_BLUE + "Type it in chat to see all loaded coupons!" ,
 			
-			DARK_PURPLE + "To redeem a coupon, run the command\n\n " + LIGHT_PURPLE + "/coupon redeem {code}\n\n" + 
-			DARK_PURPLE + "Lets redeem our coupon by doing the command\n\n" + LIGHT_PURPLE + "/coupons redeem CBE",
+			// Page 3
+			DARK_PURPLE + "To redeem a coupon, run the command"
+			+ "\n" + LIGHT_PURPLE + "/coupon redeem {code}"
+			+ "\n\n" + DARK_PURPLE + "Let's redeem our coupon by running the following command"
+			+ "\n" + LIGHT_PURPLE + "/coupon redeem example_code",
 			
-			DARK_BLUE + "Since we no longer need our coupon, lets delete it. To delete a coupon, run the command " +
-			BLUE + "/coupons delete {code}" + DARK_BLUE + "\n\n" + "To delete our coupon lets run\n\n" +
-					BLUE + "/coupons delete CBE",
+			// Page 4
+			DARK_BLUE + "Since we no longer need our coupon, let's go ahead and delete it. To delete a coupon, run the command "
+			+ "\n" + BLUE + "/coupons delete {code}"
+			+ "\n\n" + DARK_BLUE + "To delete our coupon let's execute"
+			+ "\n" + BLUE + "/coupons delete example_code",
 			
-			DARK_RED + "Other Coupon commands include\n\n" + RED + "/coupons help" + "\n\n/coupons book\n\n" +
-			DARK_RED + "Make sure to check " + RED + "   /coupons help" + DARK_RED + 
-			" as that will always be updated with current commands.",
+			// Page 5
+			DARK_RED + "Other Coupon commands include"
+			+ "\n" + RED + "/coupons help"
+			+ "\n/coupons book"
+			+ "\n\n" + DARK_RED + "Make sure to check " + RED + "/coupons help" + DARK_RED + " as it will always be updated with the latest commands.",
 			
-			"\n\n" + GOLD + MAGIC + "1234567891234567890" + "\n\n" + 
-			DARK_GRAY + "   Happy Discounting!\n   ~YourMCGeek and \n      2008Choco!! <3" +
-					"\n\n" + GOLD + MAGIC + "1234567891234567890"
-			
+			// Page 6
+			"\n\n" + GOLD + MAGIC + "1234567891234567890"
+			+ "\n\n" + DARK_GRAY + "   Happy Discounting!"
+			+ "\n~YourMCGeek and 2008Choco"
+			+ "\n\n" + GOLD + MAGIC + "1234567891234567890"
 		);
 		
 		book.setItemMeta(bookMeta);
