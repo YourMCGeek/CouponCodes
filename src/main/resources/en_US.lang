@@ -50,6 +50,7 @@ command.coupon.redeem.success = "&aYou have claimed the coupon code &e%code%"
 command.coupon.redeemtoggle.missing.code = "&cPlease specify a coupon code to modify"
 command.coupon.redeemtoggle.success.disable = "&7The coupon code %code% is &cno longer redeemable"
 command.coupon.redeemtoggle.success.enable = "&7The coupon code %code% is &anow redeemable"
+command.coupon.redeemtoggle.confirm = "&7Please enter the command: \n&c/coupon redeem confirm %code%\n&7You have 10 seconds"
 
 
 # /coupon reload

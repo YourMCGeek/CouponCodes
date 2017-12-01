@@ -1,23 +1,26 @@
 package me.yourmcgeek.coupons.commands;
 
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang.math.NumberUtils;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-
 import me.yourmcgeek.coupons.CouponCodes;
 import me.yourmcgeek.coupons.coupon.Coupon;
 import me.yourmcgeek.coupons.coupon.CouponRegistry;
 import me.yourmcgeek.coupons.utils.locale.Locale;
+import org.apache.commons.lang.math.NumberUtils;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Sound;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.stream.Collectors;
+
 
 /**
  * Created by YourMCGeek on 11/26/2016.
@@ -26,12 +29,16 @@ public class CouponCmd implements CommandExecutor {
 	
 	private final CouponCodes plugin;
 	private final CouponRegistry couponRegistry;
-	
+
+
 	public CouponCmd(CouponCodes plugin) {
 		this.plugin = plugin;
 		this.couponRegistry = plugin.getCouponRegistry();
+
 	}
-	
+
+
+
 	/*
 	 * Command structure /coupon - create <code> - <material[:data][|amount]> - delete <code>
 	 */
@@ -43,13 +50,20 @@ public class CouponCmd implements CommandExecutor {
 	@SuppressWarnings("deprecation")
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+
+		Player player = (Player) sender;
+
+		final Location location = player.getLocation();
+		Locale locale = plugin.getLocale();
+
+
+
 		if (args.length == 0) {
 			this.displayHelp(sender);
 			return true;
 		}
 		
-		Locale locale = plugin.getLocale();
-		
+
 		if (args[0].equalsIgnoreCase("create")) {
 			if (!sender.hasPermission("coupons.create")) {
 				sender.sendMessage(locale.getMessage("command.general.noperms").replace("%command%", "/coupons create"));
@@ -143,8 +157,7 @@ public class CouponCmd implements CommandExecutor {
 				return true;
 			}
 			
-			Player player = (Player) sender;
-			
+
 			if (args.length < 2) {
 				sender.sendMessage(locale.getMessage("command.coupon.redeem.missing.code"));
 				return true;
@@ -194,6 +207,70 @@ public class CouponCmd implements CommandExecutor {
 			Coupon coupon = this.couponRegistry.getCoupon(code);
 			boolean newRedeemableState = !coupon.isRedeemable();
 			coupon.setRedeemable(newRedeemableState);
+
+			sender.sendMessage(locale.getMessage("command.coupon.redeemtoggle.confirm").replace("%code%", code));
+
+
+
+			if (args[1].equalsIgnoreCase("confirm")) {
+
+					int x = 10;
+					boolean running = true;
+					while (running) {
+
+						if (x == 10) {
+							player.sendTitle("{'color': 'green', 'bold': 'true', 'text': '10'", locale.getMessage("command.coupon.redeemtoggle.confirm").replace("%code%", code));
+							player.playSound(location, Sound.BLOCK_NOTE_PLING, 1f, 17f);
+						}
+						else if (x == 9) {
+							player.sendTitle("{'color': 'green', 'bold': 'true', 'text': '9'", locale.getMessage("command.coupon.redeemtoggle.confirm").replace("%code%", code));
+							player.playSound(location, Sound.BLOCK_NOTE_PLING, 1f, 15f);
+						}
+						else if (x == 8) {
+							player.sendTitle("{'color': 'yellow', 'bold': 'true', 'text': '8'", locale.getMessage("command.coupon.redeemtoggle.confirm").replace("%code%", code));
+							player.playSound(location, Sound.BLOCK_NOTE_PLING, 1f, 13f);
+						}
+						else if (x == 7) {
+							player.sendTitle("{'color': 'yellow', 'bold': 'true', 'text': '7'", locale.getMessage("command.coupon.redeemtoggle.confirm").replace("%code%", code));
+							player.playSound(location, Sound.BLOCK_NOTE_PLING, 1f, 13f);
+						}
+						else if (x == 6) {
+							player.sendTitle("{'color': 'orange', 'bold': 'true', 'text': '6'", locale.getMessage("command.coupon.redeemtoggle.confirm").replace("%code%", code));
+							player.playSound(location, Sound.BLOCK_NOTE_PLING, 1f, 11f);
+						}
+						else if (x == 5) {
+							player.sendTitle("{'color': 'orange', 'bold': 'true', 'text': '5'", locale.getMessage("command.coupon.redeemtoggle.confirm").replace("%code%", code));
+							player.playSound(location, Sound.BLOCK_NOTE_PLING, 1f, 10f);
+						}
+						else if (x == 4) {
+							player.sendTitle("{'color': 'red', 'bold': 'true', 'text': '4'", locale.getMessage("command.coupon.redeemtoggle.confirm").replace("%code%", code));
+							player.playSound(location, Sound.BLOCK_NOTE_PLING, 1f, 8f);
+						}
+						else if (x == 3) {
+							player.sendTitle("{'color': 'red', 'bold': 'true', 'text': '3'", locale.getMessage("command.coupon.redeemtoggle.confirm").replace("%code%", code));
+							player.playSound(location, Sound.BLOCK_NOTE_PLING, 1f, 6f);
+						}
+						else if (x == 2) {
+							player.sendTitle("{'color': 'dark_red', 'bold': 'true', 'text': '2'", locale.getMessage("command.coupon.redeemtoggle.confirm").replace("%code%", code));
+							player.playSound(location, Sound.BLOCK_NOTE_PLING, 1f, 5f);
+						}
+						else if (x == 1) {
+							player.sendTitle("{'color': 'dark_red', 'bold': 'true', 'text': '1'", locale.getMessage("command.coupon.redeemtoggle.confirm").replace("%code%", code));
+							player.playSound(location, Sound.BLOCK_NOTE_PLING, 1f, 3f);
+						}
+						else if(x == 0) {
+							player.sendTitle("{'color': 'dark_red', 'bold': 'true', 'text': '1'", locale.getMessage("command.coupon.redeemtoggle.confirm").replace("%code%", code));
+							player.playSound(location, Sound.BLOCK_NOTE_PLING, 1f, 1f);
+							running = false;
+						}
+						x = x - 1;
+
+					}
+
+					if (confirmCode();)
+
+			}
+
 			
 			sender.sendMessage(locale.getMessage(newRedeemableState 
 					? "command.coupon.redeemtoggle.success.enable" 
@@ -230,8 +307,7 @@ public class CouponCmd implements CommandExecutor {
 				return true;
 			}
 			
-			Player player = (Player) sender;
-			
+
 			if (!player.hasPermission("coupons.book")) {
 				sender.sendMessage(locale.getMessage("command.general.noperms").replace("%command%", "/coupons book"));
 				return true;
@@ -272,6 +348,14 @@ public class CouponCmd implements CommandExecutor {
 	
 	private void displayHelp(CommandSender sender) {
 		this.displayHelp(sender, null);
+	}
+
+	private void confirmCode(String[] args) {
+
+		AsyncPlayerChatEvent async = new AsyncPlayerChatEvent();
+
+		async.getMessage(("/coupon redeemtoggle confirm %code%").replace("%code%", args[1]));
+
 	}
 	
 }
