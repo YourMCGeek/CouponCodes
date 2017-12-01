@@ -48,11 +48,21 @@ command.coupon.redeem.success = "&aYou have claimed the coupon code &e%code%"
 # /coupon redeemtoggle
 
 command.coupon.redeemtoggle.missing.code = "&cPlease specify a coupon code to modify"
+command.coupon.redeemtoggle.playersonly = "&cOnly players are permitted to toggle the redeemability state of coupons"
 command.coupon.redeemtoggle.success.disable = "&7The coupon code %code% is &cno longer redeemable"
 command.coupon.redeemtoggle.success.enable = "&7The coupon code %code% is &anow redeemable"
-command.coupon.redeemtoggle.confirm = "&7Please enter the command: \n&c/coupon redeem confirm %code%\n&7You have 10 seconds"
 
 
 # /coupon reload
 
 command.coupon.reload.success = "&cConfiguration files successfully reloaded"
+
+
+# /coupon confirm
+
+command.coupon.confirm.failed = "&cConfirmation was unsuccessul. Please try again"
+command.coupon.confirm.notwaiting = "&cYou are not waiting on any confirmation"
+command.coupon.confirm.playersonly = "&cOnly players are permitted to confirm previous actions"
+command.coupon.confirm.title.title = "There are %time%s to confirm"
+command.coupon.confirm.title.subtitle = "&6Execute &a/coupon confirm &6to confirm"
+command.coupon.confirm.waiting = "&7Please enter the command: \n&c/coupon confirm &7to confirm. You have 10 seconds"

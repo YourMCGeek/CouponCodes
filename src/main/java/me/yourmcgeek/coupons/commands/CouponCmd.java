@@ -1,15 +1,16 @@
 package me.yourmcgeek.coupons.commands;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -21,6 +22,7 @@ import me.yourmcgeek.coupons.CouponCodes;
 import me.yourmcgeek.coupons.api.PlayerRedeemCouponEvent;
 import me.yourmcgeek.coupons.coupon.Coupon;
 import me.yourmcgeek.coupons.coupon.CouponRegistry;
+import me.yourmcgeek.coupons.utils.ConfirmationRunnable;
 import me.yourmcgeek.coupons.utils.locale.Locale;
 
 /**
@@ -28,13 +30,14 @@ import me.yourmcgeek.coupons.utils.locale.Locale;
  */
 public class CouponCmd implements CommandExecutor {
 	
+	private final Map<UUID, ConfirmationRunnable> confirmationQueue = new HashMap<>();
+	
 	private final CouponCodes plugin;
 	private final CouponRegistry couponRegistry;
 
 	public CouponCmd(CouponCodes plugin) {
 		this.plugin = plugin;
 		this.couponRegistry = plugin.getCouponRegistry();
-
 	}
 
 	/*
@@ -183,6 +186,11 @@ public class CouponCmd implements CommandExecutor {
 		}
 		
 		else if (args[0].equalsIgnoreCase("redeemtoggle")) {
+			if (!(sender instanceof Player)) {
+				sender.sendMessage(locale.getMessage("command.coupon.redeemtoggle.playersonly"));
+				return true;
+			}
+			
 			if (!sender.hasPermission("coupon.redeemtoggle")) {
 				sender.sendMessage(locale.getMessage("command.general.noperms").replace("%command%", "/coupons redeemtoggle"));
 				return true;
@@ -199,71 +207,20 @@ public class CouponCmd implements CommandExecutor {
 				return true;
 			}
 			
+			Player player = (Player) sender;
 			Coupon coupon = this.couponRegistry.getCoupon(code);
 			boolean newRedeemableState = !coupon.isRedeemable();
-			coupon.setRedeemable(newRedeemableState);
 
-			sender.sendMessage(locale.getMessage("command.coupon.redeemtoggle.confirm").replace("%code%", code));
-
-			if (args[1].equalsIgnoreCase("confirm")) {
-				Player player = (Player) sender;
-				Location location = player.getLocation();
-				int x = 10;
-				while (true) {
-					if (x == 10) {
-						player.sendTitle("{'color': 'green', 'bold': 'true', 'text': '10'", locale.getMessage("command.coupon.redeemtoggle.confirm").replace("%code%", code));
-						player.playSound(location, Sound.BLOCK_NOTE_PLING, 1f, 17f);
-					}
-					else if (x == 9) {
-						player.sendTitle("{'color': 'green', 'bold': 'true', 'text': '9'", locale.getMessage("command.coupon.redeemtoggle.confirm").replace("%code%", code));
-						player.playSound(location, Sound.BLOCK_NOTE_PLING, 1f, 15f);
-					}
-					else if (x == 8) {
-						player.sendTitle("{'color': 'yellow', 'bold': 'true', 'text': '8'", locale.getMessage("command.coupon.redeemtoggle.confirm").replace("%code%", code));
-						player.playSound(location, Sound.BLOCK_NOTE_PLING, 1f, 13f);
-					}
-					else if (x == 7) {
-						player.sendTitle("{'color': 'yellow', 'bold': 'true', 'text': '7'", locale.getMessage("command.coupon.redeemtoggle.confirm").replace("%code%", code));
-						player.playSound(location, Sound.BLOCK_NOTE_PLING, 1f, 13f);
-					}
-					else if (x == 6) {
-						player.sendTitle("{'color': 'orange', 'bold': 'true', 'text': '6'", locale.getMessage("command.coupon.redeemtoggle.confirm").replace("%code%", code));
-						player.playSound(location, Sound.BLOCK_NOTE_PLING, 1f, 11f);
-					}
-					else if (x == 5) {
-						player.sendTitle("{'color': 'orange', 'bold': 'true', 'text': '5'", locale.getMessage("command.coupon.redeemtoggle.confirm").replace("%code%", code));
-						player.playSound(location, Sound.BLOCK_NOTE_PLING, 1f, 10f);
-					}
-					else if (x == 4) {
-						player.sendTitle("{'color': 'red', 'bold': 'true', 'text': '4'", locale.getMessage("command.coupon.redeemtoggle.confirm").replace("%code%", code));
-						player.playSound(location, Sound.BLOCK_NOTE_PLING, 1f, 8f);
-					}
-					else if (x == 3) {
-						player.sendTitle("{'color': 'red', 'bold': 'true', 'text': '3'", locale.getMessage("command.coupon.redeemtoggle.confirm").replace("%code%", code));
-						player.playSound(location, Sound.BLOCK_NOTE_PLING, 1f, 6f);
-					}
-					else if (x == 2) {
-						player.sendTitle("{'color': 'dark_red', 'bold': 'true', 'text': '2'", locale.getMessage("command.coupon.redeemtoggle.confirm").replace("%code%", code));
-						player.playSound(location, Sound.BLOCK_NOTE_PLING, 1f, 5f);
-					}
-					else if (x == 1) {
-						player.sendTitle("{'color': 'dark_red', 'bold': 'true', 'text': '1'", locale.getMessage("command.coupon.redeemtoggle.confirm").replace("%code%", code));
-						player.playSound(location, Sound.BLOCK_NOTE_PLING, 1f, 3f);
-					}
-					else if(x == 0) {
-						player.sendTitle("{'color': 'dark_red', 'bold': 'true', 'text': '1'", locale.getMessage("command.coupon.redeemtoggle.confirm").replace("%code%", code));
-						player.playSound(location, Sound.BLOCK_NOTE_PLING, 1f, 1f);
-						break;
-					}
-					
-					x--;
-				}
-			}
+			player.sendMessage(locale.getMessage("command.coupon.confirm.waiting").replace("%code%", code));
 			
-			sender.sendMessage(locale.getMessage(newRedeemableState 
-					? "command.coupon.redeemtoggle.success.enable" 
-					: "command.coupon.redeemtoggle.success.disable"
-				).replace("%code%", code));
+			ConfirmationRunnable runnable = new ConfirmationRunnable(plugin, 10, player, coupon, (p, c) -> {
+				coupon.setRedeemable(newRedeemableState);
+				p.sendMessage(locale.getMessage(newRedeemableState 
+						? "command.coupon.redeemtoggle.success.enable" 
+						: "command.coupon.redeemtoggle.success.disable"
+					).replace("%code%", code));
+			});
+			this.confirmationQueue.put(player.getUniqueId(), runnable);
 		}
 		
 		else if (args[0].equalsIgnoreCase("help")) {
@@ -319,6 +276,24 @@ public class CouponCmd implements CommandExecutor {
 			}
 			
 			sender.sendMessage(locale.getMessage("command.coupon.reload.success"));
+		}
+		
+		else if (args[0].equalsIgnoreCase("confirm")) {
+			if (!(sender instanceof Player)) {
+				sender.sendMessage(locale.getMessage("command.coupon.confirm.playersonly"));
+				return true;
+			}
+			
+			Player player = (Player) sender;
+			ConfirmationRunnable confirmation = confirmationQueue.get(player.getUniqueId());
+			
+			if (confirmation == null) {
+				player.sendMessage(locale.getMessage("command.coupon.confirm.notwaiting"));
+				return true;
+			}
+			
+			confirmation.confirm();
+			this.confirmationQueue.remove(player.getUniqueId());
 		}
 		
 		else {
