@@ -125,7 +125,10 @@ public class CouponCodes extends JavaPlugin {
 		List<Coupon> coupons = new ArrayList<>();
 		
 		try (BufferedReader reader = new BufferedReader(new FileReader(COUPON_FILE))) {
-			for (JsonElement couponData : GSON.fromJson(reader, JsonArray.class)) {
+			JsonArray couponArrayData = GSON.fromJson(reader, JsonArray.class);
+			if (couponArrayData == null) return coupons;
+			
+			for (JsonElement couponData : couponArrayData) {
 				Coupon coupon = GSON.fromJson(couponData, Coupon.class);
 				
 				if (coupon == null) {

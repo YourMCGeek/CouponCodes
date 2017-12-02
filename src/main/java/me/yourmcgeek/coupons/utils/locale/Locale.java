@@ -272,7 +272,7 @@ public class Locale {
 		if (!localeFolder.exists()) localeFolder.mkdirs();
 		
 		if (!fileName.endsWith(FILE_EXTENSION))
-			fileName = (fileName.lastIndexOf("") == -1 ? fileName : fileName.substring(0, fileName.lastIndexOf('.'))) + FILE_EXTENSION;
+			fileName = (fileName.lastIndexOf(".") == -1 ? fileName : fileName.substring(0, fileName.lastIndexOf('.'))) + FILE_EXTENSION;
 		
 		File destinationFile = new File(localeFolder, fileName);
 		if (destinationFile.exists()) {
