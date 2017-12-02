@@ -24,6 +24,8 @@ import com.google.common.collect.Lists;
 import org.apache.commons.io.IOUtils;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import net.md_5.bungee.api.ChatColor;
+
 /** 
  * Assists in the creation of multiple localizations and languages,
  * as well as the generation of default .lang files
@@ -118,7 +120,7 @@ public class Locale {
 	 * @return the message for the specified node. Default if none found
 	 */
 	public String getMessageOrDefault(String node, String defaultValue) {
-		return this.nodes.getOrDefault(node, defaultValue);
+		return ChatColor.translateAlternateColorCodes('&', this.nodes.getOrDefault(node, defaultValue));
 	}
 	
 	/**
